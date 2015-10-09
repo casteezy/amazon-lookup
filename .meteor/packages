@@ -6,6 +6,7 @@
 
 meteor-platform
 autopublish
-insecure
 twbs:bootstrap
 angular
+http
+alexsmr:apac
