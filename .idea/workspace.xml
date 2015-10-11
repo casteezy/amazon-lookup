@@ -2,22 +2,14 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="046f2600-164c-4642-8a82-14e0a280d36d" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/client/amazon-lookup.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/codeStyleSettings.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/formattedData.json" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/client/lookup-form.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/server/operation-helper.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/server/setup.js" />
-      <change type="DELETED" beforePath="D:\Dev\amazon-lookup\amazon-lookup.html" afterPath="" />
-      <change type="DELETED" beforePath="D:\Dev\amazon-lookup\amazon-lookup.js" afterPath="" />
-      <change type="DELETED" beforePath="D:\Dev\amazon-lookup\client\lookupForm.ng.html" afterPath="" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.meteor/.finished-upgraders" afterPath="$PROJECT_DIR$/.meteor/.finished-upgraders" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/codeStyleSettings.xml" afterPath="$PROJECT_DIR$/.idea/codeStyleSettings.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/client/lookup-form.js" afterPath="$PROJECT_DIR$/client/lookup-form.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/operation-helper.js" afterPath="$PROJECT_DIR$/server/operation-helper.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.meteor/packages" afterPath="$PROJECT_DIR$/.meteor/packages" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/vcs.xml" afterPath="$PROJECT_DIR$/.idea/vcs.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.meteor/release" afterPath="$PROJECT_DIR$/.meteor/release" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.meteor/versions" afterPath="$PROJECT_DIR$/.meteor/versions" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MOVED" beforePath="D:\Dev\amazon-lookup\amazon-lookup.css" afterPath="$PROJECT_DIR$/client/amazon-lookup.css" />
-      <change type="MOVED" beforePath="D:\Dev\amazon-lookup\client\lookupForm.js" afterPath="$PROJECT_DIR$/client/lookup-form.ng.html" />
     </list>
     <ignored path="amazon-lookup.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -38,11 +30,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="lookup-form.js" pinned="false" current-in-tab="false">
+      <file leaf-file-name="lookup-form.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/client/lookup-form.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-30.0">
-              <caret line="58" column="35" selection-start-line="58" selection-start-column="35" selection-end-line="58" selection-end-column="35" />
+            <state vertical-scroll-proportion="0.74647886">
+              <caret line="67" column="14" selection-start-line="67" selection-start-column="14" selection-end-line="67" selection-end-column="14" />
               <folding />
             </state>
           </provider>
@@ -51,18 +43,45 @@
       <file leaf-file-name="lookup-form.ng.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/client/lookup-form.ng.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-5.0">
-              <caret line="8" column="13" selection-start-line="8" selection-start-column="13" selection-end-line="8" selection-end-column="13" />
+            <state vertical-scroll-proportion="-8.125">
+              <caret line="13" column="0" selection-start-line="13" selection-start-column="0" selection-end-line="13" selection-end-column="0" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="operation-helper.js" pinned="false" current-in-tab="true">
+      <file leaf-file-name="scratch_1" pinned="false" current-in-tab="false">
+        <entry file="file://$APPLICATION_CONFIG_DIR$/scratches/scratch_1">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="68.75">
+              <caret line="110" column="34" selection-start-line="110" selection-start-column="34" selection-end-line="110" selection-end-column="34" />
+              <folding>
+                <element signature="e#22#462#0" expanded="false" />
+                <element signature="e#495#520#0" expanded="false" />
+                <element signature="e#539#564#0" expanded="false" />
+                <element signature="e#586#828#0" expanded="false" />
+                <element signature="e#846#3222#0" expanded="false" />
+                <element signature="e#872#3209#0" expanded="false" />
+                <element signature="e#3312#3337#0" expanded="false" />
+                <element signature="e#3365#3532#0" expanded="false" />
+                <element signature="e#3548#3578#0" expanded="false" />
+                <element signature="e#3592#3624#0" expanded="false" />
+                <element signature="e#3642#3783#0" expanded="false" />
+                <element signature="e#3801#4045#0" expanded="false" />
+                <element signature="e#4069#4089#0" expanded="false" />
+                <element signature="e#4113#4133#0" expanded="false" />
+                <element signature="e#4158#4731#0" expanded="false" />
+                <element signature="e#4747#4782#0" expanded="false" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="operation-helper.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/server/operation-helper.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.7992958">
-              <caret line="47" column="41" selection-start-line="47" selection-start-column="41" selection-end-line="47" selection-end-column="41" />
+            <state vertical-scroll-proportion="0.0">
+              <caret line="52" column="40" selection-start-line="52" selection-start-column="40" selection-end-line="52" selection-end-column="40" />
               <folding />
             </state>
           </provider>
@@ -97,8 +116,10 @@
         <option value="$PROJECT_DIR$/client/lookup.js" />
         <option value="$PROJECT_DIR$/server/setup.js" />
         <option value="$PROJECT_DIR$/client/lookup-form.ng.html" />
-        <option value="$PROJECT_DIR$/client/lookup-form.js" />
         <option value="$PROJECT_DIR$/server/operation-helper.js" />
+        <option value="$APPLICATION_CONFIG_DIR$/scratches/scratch_1" />
+        <option value="vm:791" />
+        <option value="$PROJECT_DIR$/client/lookup-form.js" />
       </list>
     </option>
   </component>
@@ -110,7 +131,7 @@
     <order />
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="951" />
+    <option name="x" value="-7" />
     <option name="width" value="974" />
     <option name="height" value="1047" />
   </component>
@@ -156,6 +177,8 @@
       <sortByType />
     </navigator>
     <panes>
+      <pane id="Scratches" />
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -218,8 +241,6 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scope" />
-      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -228,12 +249,13 @@
     <property name="HbShouldOpenHtmlAsHb" value="enabled" />
     <property name="js.meteor.project" value="true" />
     <property name="js.meteor.library.was.enabled" value="true" />
-    <property name="settings.editor.selected.configurable" value="preferences.sourceCode" />
+    <property name="settings.editor.selected.configurable" value="settings.github" />
     <property name="settings.editor.splitter.proportion" value="0.2" />
     <property name="FullScreen" value="false" />
     <property name="recentsLimit" value="5" />
     <property name="SearchEverywhereHistoryKey" value="&#9;FILE&#9;file://D:/Dev/amazon-lookup/client/lookup-form.js" />
     <property name="restartRequiresConfirmation" value="true" />
+    <property name="com.intellij.ide.scratch.NewScratchFileAction" value="JSON" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
@@ -284,7 +306,7 @@
       <method />
     </configuration>
     <configuration default="true" type="meteor-app-runner" factoryName="Meteor">
-      <option name="exePath" value="C:\Users\Trina\AppData\Local\.meteor\meteor.bat" />
+      <option name="exePath" value="$USER_HOME$/AppData/Local/.meteor/meteor.bat" />
       <option name="startBrowserSettings">
         <browser start="true" with-js-debugger="true" url="http://localhost:3000" />
       </option>
@@ -332,10 +354,17 @@
       <option name="number" value="Default" />
       <updated>1443156848956</updated>
     </task>
+    <task id="LOCAL-00001" summary="apac request working... need to parse data next">
+      <created>1444370381492</created>
+      <option name="number" value="00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1444370381492</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="951" y="0" width="974" height="1047" extended-state="0" />
+    <frame x="-7" y="0" width="974" height="1047" extended-state="0" />
     <editor active="false" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.25" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
@@ -345,10 +374,11 @@
       <window_info id="Version Control" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.3176856" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32969433" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32969433" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3286026" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3995633" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.20087336" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32896176" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
@@ -369,43 +399,27 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
+    <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
+    <option name="CHECK_NEW_TODO" value="false" />
     <option name="MAXIMUM_HISTORY_ROWS" value="500" />
+    <MESSAGE value="apac request working... need to parse data next" />
+    <MESSAGE value="Leftover js files" />
+    <option name="LAST_COMMIT_MESSAGE" value="Leftover js files" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/client/lookup-form.js</url>
-          <option name="timeStamp" value="24" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/server/operation-helper.js</url>
-          <line>12</line>
-          <option name="timeStamp" value="26" />
-        </line-breakpoint>
-      </breakpoints>
       <breakpoints-dialog>
         <breakpoints-dialog />
       </breakpoints-dialog>
-      <option name="time" value="27" />
+      <option name="time" value="48" />
     </breakpoint-manager>
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/app.js">
+    <entry file="file://$PROJECT_DIR$/client/lookup-form.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="n#!!doc" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/.meteor/packages">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="12" column="0" selection-start-line="12" selection-start-column="0" selection-end-line="12" selection-end-column="0" />
           <folding />
         </state>
       </provider>
@@ -413,10 +427,21 @@
     <entry file="file://$PROJECT_DIR$/app.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.meteor/packages">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="12" column="0" selection-start-line="12" selection-start-column="0" selection-end-line="12" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
           <caret line="30" column="59" selection-start-line="30" selection-start-column="59" selection-end-line="30" selection-end-column="59" />
-          <folding>
-            <element signature="n#!!doc" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -424,9 +449,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="n#!!doc" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -442,9 +464,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="10" column="6" selection-start-line="10" selection-start-column="6" selection-end-line="10" selection-end-column="6" />
-          <folding>
-            <element signature="n#!!doc" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -460,7 +479,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.32200357">
           <caret line="12" column="0" selection-start-line="12" selection-start-column="0" selection-end-line="12" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -468,7 +486,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.24716981">
           <caret line="31" column="9" selection-start-line="31" selection-start-column="4" selection-end-line="31" selection-end-column="9" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -476,7 +493,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -484,9 +500,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.057471264">
           <caret line="2" column="11" selection-start-line="2" selection-start-column="0" selection-end-line="2" selection-end-column="11" />
-          <folding>
-            <element signature="n#!!doc" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -498,6 +511,13 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/formattedData.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/server/setup.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -506,34 +526,51 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/formattedData.json">
+    <entry file="file://$APPLICATION_CONFIG_DIR$/scratches/scratch_1">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
+        <state vertical-scroll-proportion="68.75">
+          <caret line="110" column="34" selection-start-line="110" selection-start-column="34" selection-end-line="110" selection-end-column="34" />
+          <folding>
+            <element signature="e#22#462#0" expanded="false" />
+            <element signature="e#495#520#0" expanded="false" />
+            <element signature="e#539#564#0" expanded="false" />
+            <element signature="e#586#828#0" expanded="false" />
+            <element signature="e#846#3222#0" expanded="false" />
+            <element signature="e#872#3209#0" expanded="false" />
+            <element signature="e#3312#3337#0" expanded="false" />
+            <element signature="e#3365#3532#0" expanded="false" />
+            <element signature="e#3548#3578#0" expanded="false" />
+            <element signature="e#3592#3624#0" expanded="false" />
+            <element signature="e#3642#3783#0" expanded="false" />
+            <element signature="e#3801#4045#0" expanded="false" />
+            <element signature="e#4069#4089#0" expanded="false" />
+            <element signature="e#4113#4133#0" expanded="false" />
+            <element signature="e#4158#4731#0" expanded="false" />
+            <element signature="e#4747#4782#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/client/lookup-form.js">
+    <entry file="file://$PROJECT_DIR$/server/operation-helper.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-30.0">
-          <caret line="58" column="35" selection-start-line="58" selection-start-column="35" selection-end-line="58" selection-end-column="35" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="52" column="40" selection-start-line="52" selection-start-column="40" selection-end-line="52" selection-end-column="40" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/client/lookup-form.ng.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-5.0">
-          <caret line="8" column="13" selection-start-line="8" selection-start-column="13" selection-end-line="8" selection-end-column="13" />
+        <state vertical-scroll-proportion="-8.125">
+          <caret line="13" column="0" selection-start-line="13" selection-start-column="0" selection-end-line="13" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/server/operation-helper.js">
+    <entry file="file://$PROJECT_DIR$/client/lookup-form.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.7992958">
-          <caret line="47" column="41" selection-start-line="47" selection-start-column="41" selection-end-line="47" selection-end-column="41" />
+        <state vertical-scroll-proportion="0.74647886">
+          <caret line="67" column="14" selection-start-line="67" selection-start-column="14" selection-end-line="67" selection-end-column="14" />
           <folding />
         </state>
       </provider>

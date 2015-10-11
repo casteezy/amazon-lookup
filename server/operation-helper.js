@@ -11,7 +11,7 @@ var updateResultsCallback = function (resultsDb, jsResults, rawXmlResults) {
         } else {
             var strResponse = JSON.stringify(jsResults.ItemLookupResponse['Items']);
             strResponse = strResponse.replace(/"\$"/g, "\"metaTag\"");
-            results[key] = _.objectJSON.parse(strResponse);
+            results[key] = JSON.parse(strResponse);
         }
     });
     resultsDb.insert(results, function callback(err, id) {
@@ -43,9 +43,9 @@ function doSearchByItemId(resultDb, itemId, callback) {
      https://affiliate-program.amazon.com/gp/advertising/api/detail/your-account.html
      */
     var opHelper = new OperationHelper({
-        awsId: '',              // FIXME AWS ID
-        awsSecret: '',          // FIXME Secret Key
-        assocId: ''             // FIXME Associate Tag, e.g. 1234-6789-1011
+        awsId: 'AKIAIL2NSO2QLXXSQW2Q',              // FIXME AWS ID
+        awsSecret: '5hmMK87TWCTaK/ipQwmwyvlpP6C9ScFMK5rSYPDM',          // FIXME Secret Key
+        assocId: '9470-2365-1575'             // FIXME Associate Tag, e.g. 1234-6789-1011
     });
 
     // Total results already included
