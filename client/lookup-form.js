@@ -1,26 +1,20 @@
+var _itemIds = '075691002589,815150018092';  // Tape measure, 2 pack tumblers
+
 angular
     .module('amazonLookup', [
         'angular-meteor'
     ])
-    .controller('lookupCtrl', ['$scope', '$http', '$meteor', 'SearchService',
-        function($scope, $http, $meteor, SearchService) {
-            var _itemId = '075691002589';
+    .controller('lookupCtrl', ['$scope', '$http', '$meteor', '$window', '$filter', 'SearchService',
+        function($scope, $http, $meteor, $window, $filter, SearchService) {
 
-            //$scope.results = '';
             $scope.codePrint = {}; // for debugging
-
             $scope.resultItems = $meteor.collection(ResultItems);
 
             $scope.submit = function() {
-                var itemId = _itemId;
-                $meteor.call('searchByItemId', itemId).then(
+                var itemIds = _itemIds;
+                $meteor.call('searchByItemId', itemIds).then(
                     function success(data) {
-                        console.log('Successful!');
-                        if ($scope.resultItems.length === 0) {
-                            $scope.codePrint['Result Items?'] = false;
-                        } else {
-                            $scope.codePrint['Query success!'] = true;
-                        }
+                        $scope.codePrint['Query success!'] = true;
                         debugFormat();
                     },
                     function error(err) {
@@ -30,18 +24,10 @@ angular
             }
 
             function debugFormat() {
-                //transformObjArray($scope.resultItems[0]);
                 $scope.resultItems.forEach(function (obj, idx, arr) {
                     angular.forEach(obj, function (value, key) {
                         $scope.codePrint[key] = value;
                     });  // for debugging
-
-                    //$scope.items = [];
-                    //obj.Items && obj.Items.forEach(function (itemWrapper, indx, array) {
-                    //angular.forEach(itemWrapper.Item, function (val, key) {
-                    //    $scope.items.push(getItemData(val));
-                    //});
-                    //});
                 });
             }
 
@@ -51,18 +37,34 @@ angular
                 department: ['Item', 'ItemAttributes', 'Department'],
                 productGroup: ['Item', 'ItemAttributes', 'ProductGroup'],
                 productType: ['Item', 'ItemAttributes', 'ProductTypeName'],
-                newCount: ['Item', 'OfferSummary', 'TotalNew'],
-            };
-            $scope.clicked = function () {
-                var resultItems = $scope.resultItems[0]['Items'];
-
-                var foundValues = {};
-                for (var val in valuesToFind) {
-                    foundValues[val] = SearchService.findValue(resultItems, valuesToFind[val]);
-                }
-                $scope.results = SearchService.convertToCsvInternal(foundValues);
+                newCount: ['Item', 'OfferSummary', 'TotalNew']
             };
 
+            $scope.clicked = function() {
+                $scope.results = '';
+                $scope.resultItems.forEach(function(obj, idx, arr) {
+                    var item = $scope.resultItems[idx]['Items'];
+
+                    var foundValues = {};
+                    for (var val in valuesToFind) {
+                        foundValues[val] = SearchService.findValue(item, angular.copy(valuesToFind[val]));
+                    }
+
+                    $scope.results += SearchService.convertToCsv(foundValues, idx == 0);
+                });
+            };
+
+            $scope.download = function() {
+                var encodedUri = encodeURIComponent($scope.results);
+                var elem = document.createElement('a');
+                elem.href = 'data:attachment/csv,' + encodedUri;
+                elem.target = '_blank';
+                var dateTime = $filter('date')(Date.now(),'yyyy-MMM-dd_hh-mm');
+                elem.download = dateTime + '__Results.csv';
+
+                document.body.appendChild(elem);
+                elem.click();
+            };
         }]) // end controller
 
     .service('SearchService', [function() {
@@ -89,13 +91,54 @@ angular
             return findValueInternal(searchObj[firstProperty], searchPropList);
         }
 
-        // TODO
-        function convertToCsvInternal(obj) {
-            return JSON.stringify(obj); // temporary
+        function convertToCsvWithHeaders(obj) {
+            var csvColumns = '';
+            var csvOutput = '';
+
+            var objKeys = Object.keys(obj);
+            for (var i = 0; i < objKeys.length; i++) {
+                var key = objKeys[i];
+
+                csvColumns += key;
+                if (obj[key]) {
+                    csvOutput += '\"' + obj[key] + '\"';
+                } else {
+                    csvOutput += 'null';
+                }
+                if (i < (objKeys.length - 1)) {
+                    csvColumns += ',';
+                    csvOutput += ',';
+                }
+            }
+            var csvList = csvColumns + '\n' + csvOutput + '\n';
+            return csvList;
+        }
+
+        function convertToCsv(obj) {
+            var csvOutput = '';
+
+            var objKeys = Object.keys(obj);
+            for (var i = 0; i < objKeys.length; i++) {
+                var key = objKeys[i];
+
+                if (obj[key]) {
+                    csvOutput += '\"' + obj[key] + '\"';
+                } else {
+                    csvOutput += 'null';
+                }
+                if (i < (objKeys.length - 1)) {
+                    csvOutput += ',';
+                }
+            }
+            return csvOutput + '\n';
+        }
+
+        function convertInternal(obj, includeHeaders) {
+            return includeHeaders ? convertToCsvWithHeaders(obj) : convertToCsv(obj);
         }
 
         return {
             findValue: findValueInternal,
-            convertToCsv: convertToCsvInternal
+            convertToCsv: convertInternal
         };
     }]); // end service

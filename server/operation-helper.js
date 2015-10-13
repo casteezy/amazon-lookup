@@ -31,8 +31,8 @@ Meteor.methods({
     }
 });
 
-function doSearchByItemId(resultDb, itemId, callback) {
-    if (!itemId) {
+function doSearchByItemId(resultDb, itemIds, callback) {
+    if (!itemIds) {
         return;
     }
     /*
@@ -43,9 +43,9 @@ function doSearchByItemId(resultDb, itemId, callback) {
      https://affiliate-program.amazon.com/gp/advertising/api/detail/your-account.html
      */
     var opHelper = new OperationHelper({
-        awsId: 'AKIAIL2NSO2QLXXSQW2Q',              // FIXME AWS ID
-        awsSecret: '5hmMK87TWCTaK/ipQwmwyvlpP6C9ScFMK5rSYPDM',          // FIXME Secret Key
-        assocId: '9470-2365-1575'             // FIXME Associate Tag, e.g. 1234-6789-1011
+        awsId: '',              // FIXME AWS ID
+        awsSecret: '',          // FIXME Secret Key
+        assocId: ''             // FIXME Associate Tag, e.g. 1234-6789-1011
     });
 
     // Total results already included
@@ -53,7 +53,7 @@ function doSearchByItemId(resultDb, itemId, callback) {
         'Condition': 'New',  // Used/New
         'IdType': 'UPC',
         'IncludeReviewsSummary': true,
-        'ItemId': itemId,
+        'ItemId': itemIds,
         //'MerchantId': 'Amazon', //Only items sold by Amazon
         'SearchIndex': 'All',
         'ResponseGroup': 'ItemAttributes,OfferSummary'
