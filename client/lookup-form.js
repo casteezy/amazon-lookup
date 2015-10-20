@@ -1,32 +1,79 @@
+// TODO: use File uploaded data instead
 var _itemIds = '075691002589,815150018092';  // Tape measure, 2 pack tumblers
 
+/**
+ * Papa Parse - http://papaparse.com/
+ */
+var _Papa = Papa;
+
 angular
-    .module('amazonLookup', [
-        'angular-meteor'
-    ])
-    .controller('lookupCtrl', ['$scope', '$http', '$meteor', '$window', '$filter', 'SearchService',
+    .module('amazonLookup', [ 'angular-meteor' ])
+
+    /**
+     * Source:
+     * http://odetocode.com/blogs/scott/archive/2013/07/05/a-file-input-directive-for-angularjs.aspx
+     */
+    // TODO: move to separate file
+    .directive('fileInput', function ($parse) {
+        return {
+            restrict: 'EA',
+            template: '<input type="file" accept=".csv" />',
+            replace: true,
+            link: function (scope, element, attrs) {
+
+                var modelGet = $parse(attrs.fileInput);
+                var modelSet = modelGet.assign;
+                var onChange = $parse(attrs.onChange);
+
+                var updateModel = function () {
+                    scope.$apply(function () {
+                        modelSet(scope, element[0].files[0]);
+                        onChange(scope);
+                    });
+                };
+
+                element.bind('change', updateModel);
+            }
+        };
+    })
+    .controller('lookupCtrl',
         function($scope, $http, $meteor, $window, $filter, SearchService) {
+            var self = this;
 
-            $scope.codePrint = {}; // for debugging
-            $scope.resultItems = $meteor.collection(ResultItems);
+            // FILE INPUT - set up in external provider?
+            var config = {
+                complete: function(results, file) {
+                    self.codePrint['Parse complete'] = results;
+                },
+                error: function(error, file) {
+                    self.codePrint['Parse error'] = error;
+                    self.file = null;
+                }
+            };
+            self.parse = function() {
+                _Papa.parse(self.file, config);
+            };
 
-            $scope.submit = function() {
+            self.ResultCollection = $meteor.collection(ResultItems);
+            self.codePrint = {}; // for debugging
+
+            self.submit = function() {
                 var itemIds = _itemIds;
                 $meteor.call('searchByItemId', itemIds).then(
                     function success(data) {
-                        $scope.codePrint['Query success!'] = true;
+                        self.codePrint['Query success!'] = true;
                         debugFormat();
                     },
                     function error(err) {
                         console.log('Failed search: ' + err);
                     }
                 );
-            }
+            };
 
             function debugFormat() {
-                $scope.resultItems.forEach(function (obj, idx, arr) {
+                self.ResultCollection.forEach(function (obj, idx, arr) {
                     angular.forEach(obj, function (value, key) {
-                        $scope.codePrint[key] = value;
+                        self.codePrint[key] = value;
                     });  // for debugging
                 });
             }
@@ -39,23 +86,22 @@ angular
                 productType: ['Item', 'ItemAttributes', 'ProductTypeName'],
                 newCount: ['Item', 'OfferSummary', 'TotalNew']
             };
-
-            $scope.clicked = function() {
-                $scope.results = '';
-                $scope.resultItems.forEach(function(obj, idx, arr) {
-                    var item = $scope.resultItems[idx]['Items'];
+            self.clicked = function parseValuesFromCollection() {
+                self.results = '';
+                self.ResultCollection.forEach(function(obj, idx, arr) {
+                    var item = self.ResultCollection[idx]['Items'];
 
                     var foundValues = {};
                     for (var val in valuesToFind) {
                         foundValues[val] = SearchService.findValue(item, angular.copy(valuesToFind[val]));
                     }
 
-                    $scope.results += SearchService.convertToCsv(foundValues, idx == 0);
+                    self.results += SearchService.convertToCsv(foundValues, idx == 0);
                 });
             };
 
-            $scope.download = function() {
-                var encodedUri = encodeURIComponent($scope.results);
+            self.download = function download() {
+                var encodedUri = encodeURIComponent(self.results);
                 var elem = document.createElement('a');
                 elem.href = 'data:attachment/csv,' + encodedUri;
                 elem.target = '_blank';
@@ -65,9 +111,10 @@ angular
                 document.body.appendChild(elem);
                 elem.click();
             };
-        }]) // end controller
+        }) // end controller
 
-    .service('SearchService', [function() {
+    // TODO: move to separate file
+    .factory('SearchService', [function() {
         /**
          * @param searchObj object to search through
          * @param searchPropList list of properties to go through to get to value (hierarchy)
@@ -91,6 +138,9 @@ angular
             return findValueInternal(searchObj[firstProperty], searchPropList);
         }
 
+        /**
+         * Converts all values into CSV string. Uses keys as header.
+         */
         function convertToCsvWithHeaders(obj) {
             var csvColumns = '';
             var csvOutput = '';
@@ -114,9 +164,12 @@ angular
             return csvList;
         }
 
+        /**
+         * Converts all values into CSV string
+         */
         function convertToCsv(obj) {
             var csvOutput = '';
-
+            // convert to forEach? what's more performant?
             var objKeys = Object.keys(obj);
             for (var i = 0; i < objKeys.length; i++) {
                 var key = objKeys[i];

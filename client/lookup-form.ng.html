@@ -2,27 +2,40 @@
 
     <div class="panel panel-default" style="margin-top:10px;">
         <div class="panel-heading">
-            <h4 style="margin:0;padding:0;">Amazon Item Lookup by UPC</h4>
+            <h4 style="margin:0;padding:0;">AWS Item Lookup</h4>
         </div>
         <div class="panel-body">
-            Debug mode:
-            <pre style="margin-bottom:20px;" class="col-sm-12">
-                <p ng-repeat="(key, value) in codePrint"><b>{{key}}</b>: <br>{{value}}</p>
-            </pre>
+            <div class="col-sm-12">
+                <h4>Debug Mode</h4>
+                <pre style="margin-bottom:20px;" class="">
+                    <p ng-repeat="(key, value) in lookupCtrl.codePrint"><b>{{key}}</b>: <br>{{value}}</p>
+                </pre>
+            </div>
 
+            <div class="col-sm-12" style="margin-bottom: 10px;">
+                <h4>Upload</h4>
 
-            <section class="col-lg-12">
-                <label for="resultForm">Results</label>
+                <div file-input="lookupCtrl.file"></div>
+                <p class="help-block">Upload UPCs in CSV format.</p>
+                <button class="btn btn-default btn-small" ng-click="lookupCtrl.parse()"
+                        ng-disabled="!lookupCtrl.file">Upload
+                </button>
+            </div>
+
+            <section class="col-sm-12">
+                <h4>Results</h4>
+
                 <form id="csvForm">
                     <div class="form-group">
-                        <textarea placeholder="CSV list of item UPCs" ng-model="results" class="form-control"
-                          style="margin-bottom:10px;" rows="10"></textarea>
-                        <button type="submit" ng-click="submit()" class="btn btn-primary btn-default">Search</button>
+                        <textarea placeholder="CSV list of item UPCs" ng-model="lookupCtrl.results" class="form-control"
+                                  style="margin-bottom:10px;" rows="10"></textarea>
+                        <button type="submit" ng-click="lookupCtrl.submit()" class="btn btn-primary btn-default">
+                            Search
+                        </button>
+                        <button ng-click="lookupCtrl.clicked()" class="btn btn-default">Show Results</button>
+                        <a href="" ng-click="lookupCtrl.download()" class="btn btn-default">Download Results</a>
                     </div>
                 </form>
-
-                <button ng-click="clicked()" class="btn btn-default">Show Results</button>
-                <a href="" ng-click="download()"  class="btn btn-default">Download Results</a>
 
             </section>
 
