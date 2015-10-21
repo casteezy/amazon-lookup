@@ -15,11 +15,16 @@
             <div class="col-sm-12" style="margin-bottom: 10px;">
                 <h4>Upload</h4>
 
-                <div file-input="lookupCtrl.file"></div>
+                <div file-input="lookupCtrl.file" on-change="lookupCtrl.fileChanged()"></div>
                 <p class="help-block">Upload UPCs in CSV format.</p>
-                <button class="btn btn-default btn-small" ng-click="lookupCtrl.parse()"
-                        ng-disabled="!lookupCtrl.file">Upload
-                </button>
+                <div ng-switch="lookupCtrl.fileStatus">
+                    <button ng-switch-when="1" class="btn btn-sm btn-success">Upload Success</button>
+                    <button ng-switch-when="-1" class="btn btn-sm btn-error">Upload Fail</button>
+                    <button ng-switch-default class="btn btn-sm btn-primary" ng-click="lookupCtrl.upload()"
+                            ng-disabled="!lookupCtrl.file">Upload
+                    </button>
+                    <button class="btn btn-sm btn-default" ng-disabled="!lookupCtrl.file" ng-click="lookupCtrl.clearUpload()">Clear</button>
+                </div>
             </div>
 
             <section class="col-sm-12">
