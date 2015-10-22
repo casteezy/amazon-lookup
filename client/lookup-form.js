@@ -7,166 +7,60 @@ var _itemIds = '075691002589,815150018092';  // Tape measure, 2 pack tumblers
 var _Papa = Papa;
 
 // TODO: prefix all with module
-// var module =
-angular
-    .module('amazonLookup', ['angular-meteor'])
+var module = angular.module('amazonLookup');
 
-/**
- * Source:
- * http://odetocode.com/blogs/scott/archive/2013/07/05/a-file-input-directive-for-angularjs.aspx
+/*
+ Array of AWS 'response group' keys to reach desired value to input into AwsResultsService.
+ E.g. Request > IsValid => "True", so { isValid: "True" }
+ Note: Assumes root is accounted for (ItemLookupRequest > Items).
  */
-    .directive('fileInput', function ($parse) {
-        return {
-            restrict: 'EA',
-            template: '<input type="file" accept=".csv" />',
-            replace: true,
-            link: function (scope, element, attrs) {
+module.value('RequestResponseGroupTrees', {
+    isValid: ['Request', 'IsValid'],
+    errors: ['Request', 'Errors', 'Error'],
+    itemIds: ['Request', 'ItemLookupRequest', 'ItemId']
+});
 
-                var modelGet = $parse(attrs.fileInput);
-                var modelSet = modelGet.assign;
-                var onChange = $parse(attrs.onChange);
+module.value('ItemResponseGroupTrees', {
+    name: ['Item', 'ItemAttributes', 'Title'],
+    listPrice: ['Item', 'ItemAttributes', 'ListPrice', 'FormattedPrice'],
+    department: ['Item', 'ItemAttributes', 'Department'],
+    productGroup: ['Item', 'ItemAttributes', 'ProductGroup'],
+    productType: ['Item', 'ItemAttributes', 'ProductTypeName'],
+    upc: ['Item', 'ItemAttributes', 'UPC'],
+    newCount: ['Item', 'OfferSummary', 'TotalNew']
+});
 
-                var updateModel = function () {
-                    scope.$apply(function () {
-                        modelSet(scope, element[0].files[0]);
-                        onChange(scope);
-                    });
-                };
-
-                scope.$on('clearFileFromUploader', function () {
-                    modelSet(scope, []);
-                    element.val(null);
-                });
-
-                element.bind('change', updateModel);
-            }
-        };
-    })
-    /**
-     * Saves and manages array of IDs.
-     */
-    .factory('IdService', function () {
-        var savedIds = [];
-
-        /**
-         * Clear all IDs in array;
-         */
-        function reset() {
-            savedIds = [];
-        }
-
-        /**
-         * Save array of IDs into existing array
-         */
-        function save(itemIds) {
-            if (Array.isArray(itemIds)) {
-                Array.prototype.push.apply(savedIds, itemIds);
-            }
-        }
-
-        /**
-         * Get copy of ID array.
-         */
-        function get() {
-            return angular.copy(savedIds);
-        }
-
-        /**
-         * Get ID array as CSV string.
-         */
-        function getString() {
-            return savedIds.toString();
-        }
-
-        return {
-            resetIds: reset,
-            saveIds: save,
-            getIds: get,
-            getIdString: getString
-        }
-    })
-    .factory('ResultItemsMtrHelper', function ($meteor) {
-        function search(itemIds, successCallback, errorCallback) {
-            $meteor.call('searchByItemId', itemIds).then(
-                function success(data) {
-                    console.log('searchByItemId method success!');
-                    successCallback && successCallback(data);
-                },
-                function error(err) {
-                    console.log('searchByItemId method error: ' + err);
-                    errorCallback && errorCallback(err);
-                }
-            );
-        }
-
-        return {
-            searchWithItemIds: search
-        }
-    })
-    .factory('SavedSearchesMtrHelper', function ($meteor) {
-        function save(searchedValues, successCallback, errorCallback) {
-            $meteor.call('saveSearch', Date.now(), searchedValues).then(
-                function success(data) {
-                    console.log('saveSearch method success!');
-                    successCallback && successCallback(data);
-                },
-                function error(err) {
-                    console.log('saveSearch method error: ' + err);
-                    errorCallback && errorCallback(err);
-                }
-            );
-        }
-
-        return {
-            saveSearch: save
-        }
-    })
-    /*
-        Array of AWS 'response group' keys to reach desired value to be used with AwsResultsService.
-        E.g. Request > IsValid => "True", so { isValid: "True" }
-        Note: Assumes root is accounted for (ItemLookupRequest > Items).
-     */
-    .value('RequestResponseGroupTrees', {
-        isValid: ['Request', 'IsValid'],
-        errors: ['Request', 'Errors', 'Error'],
-        itemIds: ['Request', 'ItemLookupRequest', 'ItemId']
-    })
-    .value('ItemResponseGroupTrees', {
-        name: ['Item', 'ItemAttributes', 'Title'],
-        listPrice: ['Item', 'ItemAttributes', 'ListPrice', 'FormattedPrice'],
-        department: ['Item', 'ItemAttributes', 'Department'],
-        productGroup: ['Item', 'ItemAttributes', 'ProductGroup'],
-        productType: ['Item', 'ItemAttributes', 'ProductTypeName'],
-        upc: ['Item', 'ItemAttributes', 'UPC'],
-        newCount: ['Item', 'OfferSummary', 'TotalNew']
-    })
-    .controller('LookupController',
-    function ($scope, $window, $filter, ResultItemsMtrHelper, SavedSearchesMtrHelper,
+module.controller('LookupController',
+    function ($scope, $window, $filter, ResultItemsMtrHelper, SavedSearchesMtrHelper, StatusService,
               IdService, AwsResultsService, ItemResponseGroupTrees, RequestResponseGroupTrees) {
         var self = this;
         self.MtrResults = $scope.$meteorCollection(ResultItems);
         self.codePrint = {}; // for debugging
+        self.fileStatus = 0;
+        self.clearUpload = clearUpload;
 
         var papaConfig = {
-            complete: parseSuccess,
-            error: parseError
+            complete: fileParseSuccess,
+            error: fileParseError
         };
 
-        function parseSuccess(results, file) {
-            console.log('Parse success');
+        function fileParseSuccess(results, file) {
+            StatusService.logSuccess('File parse success!');
+
             angular.forEach(results.data, function (idRow) {
                 IdService.saveIds(idRow);
             });
-            console.log('Saved IDs: ' + IdService.getIds());
-            self.codePrint['Parse complete'] = results;
+            StatusService.logInfo('Parsed IDs from file: ' + IdService.getIds());
+            StatusService.logInfo('File parse results: ' + results);
             self.fileStatus = 1;
             clearUpload();
 
             var itemIds = IdService.getIdString();
-
             ResultItemsMtrHelper.searchWithItemIds(itemIds, function successSearch(data) {
-                self.codePrint['Query success!'] = true;
+                StatusService.logSuccess('ResultItems method successful');
                 debugFormat();
+            }, function errorSearch(err) {
+                StatusService.logError('ResultItems method failed: ' + err);
             });
         }
 
@@ -178,24 +72,22 @@ angular
             });
         }
 
-        function parseError(error, file) {
-            console.log('Parse error:' + error);
+        function fileParseError(error, file) {
+            StatusService.logError('File parse error:' + error);
             self.file = null;
-            self.codePrint['Parse error'] = error;
             self.fileStatus = -1;
         }
 
         self.upload = function uploadAndParseFile() {
+            StatusService.clear();
             _Papa.parse(self.file, papaConfig);
         };
 
-        self.clearUpload = clearUpload;
         function clearUpload() {
             $scope.$broadcast('clearFileFromUploader');
             self.file = null;
         }
 
-        self.fileStatus = 0;
         self.fileChanged = function () {
             self.fileStatus = 0;
         };
@@ -203,8 +95,11 @@ angular
         self.submit = function () {
             var itemIds = _itemIds;
             ResultItemsMtrHelper.searchWithItemIds(itemIds, function successSearch(data) {
-                self.codePrint['Query success!'] = true;
+                //self.codePrint['Query success!'] = true;
+                StatusService.logSuccess('ResultItems method successful');
                 debugFormat();
+            }, function errorSearch(error) {
+                StatusService.logError('ResultItems method error ' + error);
             });
         };
 
@@ -212,6 +107,26 @@ angular
         self.clicked = function showClicked() {
             parseResultsFromDb();
         };
+
+        function logRequestErrors(errorList) {
+            var hasError = false;
+            if (errorList) {
+                if (!angular.isArray(errorList)) {
+                    var errMessage = AwsResultsService.findValue(errorList, ['Code']);
+                    errMessage += ': ' + AwsResultsService.findValue(errorList, ['Message']);
+                    StatusService.logError('AWS Request Error - "' + errMessage + '"');
+                    hasError = true;
+                } else {
+                    angular.forEach(errorList, function (err) {
+                        var errMessage = AwsResultsService.findValue(err, ['Code']);
+                        errMessage += ': ' + AwsResultsService.findValue(err, ['Message']);
+                        StatusService.logError('AWS Request Error - "' + errMessage + '"');
+                    });
+                    hasError = errorList.length > 0;
+                }
+            }
+            return hasError;
+        }
 
         /**
          * Read in AWS responses from database and parse to get desired values for output.
@@ -232,40 +147,57 @@ angular
                 var errorList = AwsResultsService.findValue(responseItems, angular.copy(RequestResponseGroupTrees.errors));
                 var requestIds = AwsResultsService.findValue(responseItems, angular.copy(RequestResponseGroupTrees.itemIds));
 
+                var hasErrors = logRequestErrors(errorList);
 
-                // TODO: errors come back as object if only 1, need to treat different cases
-                var hasValidResults = false;
-                if (!angular.isArray(errorList)) {
-                    var error = {
-                        Code: errorList.Code,
-                        Message: errorList.Message
-                    }
-                }
+                /*
+                 TODO: handle errors AND validation
 
-                if (validRequest === 'True' && requestIds.length > errorList.length) {
+                 valid:
+                 - validRequest === 'True', errorList as array is empty
+                 - validRequest === 'True', errorList as object or primitive is falsy
+                 - validRequest === 'True', as arrays, errorList.length < requestIds.length
+                 - validRequest === 'True', as arrays,
+                    errorList as object or primitive is truthy AND requestIds is array length > 0
+                 - validRequest === 'True', as arrays,
+                 errorList as object or primitive is truthy AND requestIds is array length > 0
+                 */
+
+                if (validRequest === 'True' && !hasErrors) {
+                    StatusService.logSuccess('AWS request valid and successful!');
+                    var foundValues = {};
+                    angular.forEach(ItemResponseGroupTrees, function (valTree, valToFind) {
+                        foundValues[valToFind] = AwsResultsService.findValue(responseItems, angular.copy(valTree));
+                    });
+                    var showHeader = index === 0;
+                    self.results += AwsResultsService.convertToCsv(foundValues, showHeader);
+
+                } else if (validRequest === 'True' && angular.isArray(requestIds)
+                        && angular.isArray(errorList) && (requestIds.length > errorList.length)) {
                     var foundValues = {};
                     angular.forEach(ItemResponseGroupTrees, function (valTree, valToFind) {
                         foundValues[valToFind] = AwsResultsService.findValue(responseItems, angular.copy(valTree));
                     });
                     // TODO: redundantly saving searches? pass in UPC as ID
-                    SavedSearchesMtrHelper.saveSearch(foundValues);
+                    //SavedSearchesMtrHelper.saveSearch(foundValues);
 
                     var showHeader = index === 0;
                     self.results += AwsResultsService.convertToCsv(foundValues, showHeader);
                 } else if (validRequest !== 'True') {
-                    console.warn('Invalid AWS request!');
-                } else if (requestIds.length <= errorList.length) {
-                    console.warn('All IDs have AWS errors: ');
+                    StatusService.logError('Invalid AWS request.');
+                } else if (angular.isArray(requestIds) && angular.isArray(errorList)
+                    && (requestIds.length <= errorList.length)) {
+                    StatusService.logError('Unsuccessful item lookup...');
 
                     angular.forEach(errorList, function (err) { // Array
                         if (err.Code && err.Message) {
-                            console.warn(err.Code + ': ' + err.Message);
+                            StatusService.logError(err.Code + ': ' + err.Message);
                         } else {
-                            console.warn(err);
+                            StatusService.logError(err);
                         }
                     });
                 }
             });
+            //StatusService.logInfo('CSV results: ' + self.results);
 
             /*self.MtrResults.forEach(function(obj, idx, arr) { // should only run once
              var foundValues = {};
@@ -305,90 +237,4 @@ angular
             document.body.appendChild(elem);
             elem.click();
         };
-    }) // end controller
-
-    // TODO: move to separate file
-    .factory('AwsResultsService', [function () {
-        /**
-         * Recursively searches through object/array until either last element in searchPropList is reached
-         * or until null
-         * @param searchObj object to search through
-         * @param searchPropList list of properties to go through to get to value (hierarchy)
-         * @returns found value in object
-         */
-        function findValueInternal(searchObj, searchPropList) {
-            if (!searchObj) { // Result not found
-                return null;
-            }
-            if (!searchPropList || searchPropList.length === 0) { // Result found or invalid list
-                if (Array.isArray(searchObj) && searchObj.length === 1) {
-                    return searchObj[0];
-                }
-                return searchObj;
-            }
-            var firstProperty = searchPropList.splice(0, 1)[0]; // Remove first object
-            if (Array.isArray(searchObj)) { // Keep searching through array-wrapped object
-                return findValueInternal(searchObj[0][firstProperty], searchPropList);
-            }
-            // Keep searching thru object
-            return findValueInternal(searchObj[firstProperty], searchPropList);
-        }
-
-        /**
-         * Converts all values into CSV string. Uses keys as header.
-         * Values must be primitive types.
-         */
-        function convertToCsvWithHeaders(obj) {
-            var csvColumns = '';
-            var csvOutput = '';
-
-            var objKeys = Object.keys(obj);
-            for (var i = 0; i < objKeys.length; i++) {
-                var key = objKeys[i];
-
-                csvColumns += key;
-                if (obj[key]) {
-                    csvOutput += '\"' + obj[key] + '\"';
-                } else {
-                    csvOutput += 'null';
-                }
-                if (i < (objKeys.length - 1)) {
-                    csvColumns += ',';
-                    csvOutput += ',';
-                }
-            }
-            var csvList = csvColumns + '\n' + csvOutput + '\n';
-            return csvList;
-        }
-
-        /**
-         * Converts all values into CSV string
-         */
-        function convertToCsv(obj) {
-            var csvOutput = '';
-            // convert to forEach? what's more performant? is this null safe?
-            var objKeys = Object.keys(obj);
-            for (var i = 0; i < objKeys.length; i++) {
-                var key = objKeys[i];
-
-                if (obj[key]) {
-                    csvOutput += '\"' + obj[key] + '\"';
-                } else {
-                    csvOutput += 'null';
-                }
-                if (i < (objKeys.length - 1)) {
-                    csvOutput += ',';
-                }
-            }
-            return csvOutput + '\n';
-        }
-
-        function convertInternal(obj, includeHeaders) {
-            return includeHeaders ? convertToCsvWithHeaders(obj) : convertToCsv(obj);
-        }
-
-        return {
-            findValue: findValueInternal,
-            convertToCsv: convertInternal
-        };
-    }]); // end service
+    }); // end controller

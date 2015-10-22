@@ -47,6 +47,7 @@ Meteor.methods({
 });
 
 function doSearchByItemId(resultDb, itemIds, callback) {
+    resultDb.remove({}); // TODO: clear? is this necessary?
     if (!itemIds || !itemIds.length) {
         return;
     }

@@ -11,19 +11,27 @@
                     <p ng-repeat="(key, value) in lookupCtrl.codePrint"><b>{{key}}</b>: <br>{{value}}</p>
                 </pre>
             </div>
+            <div class="col-sm-12">
+                <div ng-include="'client/status-alerts.ng.html'"></div>
+            </div>
 
             <div class="col-sm-12" style="margin-bottom: 10px;">
                 <h4>Upload</h4>
 
-                <div file-input="lookupCtrl.file" on-change="lookupCtrl.fileChanged()"></div>
-                <p class="help-block">Upload UPCs in CSV format.</p>
-                <div ng-switch="lookupCtrl.fileStatus">
-                    <button ng-switch-when="1" class="btn btn-sm btn-success">Upload Success</button>
-                    <button ng-switch-when="-1" class="btn btn-sm btn-error">Upload Fail</button>
-                    <button ng-switch-default class="btn btn-sm btn-primary" ng-click="lookupCtrl.upload()"
-                            ng-disabled="!lookupCtrl.file">Upload
-                    </button>
-                    <button class="btn btn-sm btn-default" ng-disabled="!lookupCtrl.file" ng-click="lookupCtrl.clearUpload()">Clear</button>
+                <div class="form-group">
+                    <div class="form-control" file-input="lookupCtrl.file" on-change="lookupCtrl.fileChanged()"></div>
+                    <p class="help-block">Upload UPCs in CSV format.</p>
+
+                    <div ng-switch="lookupCtrl.fileStatus">
+                        <button ng-switch-when="1" class="btn btn-sm btn-success">Upload Success</button>
+                        <button ng-switch-when="-1" class="btn btn-sm btn-error">Upload Fail</button>
+                        <button ng-switch-default class="btn btn-sm btn-primary" ng-click="lookupCtrl.upload()"
+                                ng-disabled="!lookupCtrl.file">Upload
+                        </button>
+                        <button class="btn btn-sm btn-default" ng-disabled="!lookupCtrl.file"
+                                ng-click="lookupCtrl.clearUpload()">Clear
+                        </button>
+                    </div>
                 </div>
             </div>
 
