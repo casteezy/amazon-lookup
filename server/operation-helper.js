@@ -35,6 +35,9 @@ Meteor.methods({
         var searchResults = doAsyncSearch(ResultItems, itemIds, updateResultsCallback);
         return searchResults;
     },
+    clearResults: function() {
+        ResultItems.remove({});
+    },
     saveSearch: function(id, searchData) {
         SavedSearches.insert({ id: id, searchData: searchData }, function callback(err, id) {
             if (err) {
@@ -47,7 +50,6 @@ Meteor.methods({
 });
 
 function doSearchByItemId(resultDb, itemIds, callback) {
-    resultDb.remove({}); // TODO: clear? is this necessary?
     if (!itemIds || !itemIds.length) {
         return;
     }

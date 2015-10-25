@@ -13,9 +13,22 @@ module.factory('ResultItemsMtrHelper', function ($meteor) {
             }
         );
     }
+    function clear(successCallback, errorCallback) {
+        $meteor.call('clearResults').then(
+            function success(data) {
+                console.log('clearResults method success!');
+                successCallback && successCallback(data);
+            },
+            function error(err) {
+                console.log('clearResults method error: ' + err);
+                errorCallback && errorCallback(err);
+            }
+        )
+    }
 
     return {
-        searchWithItemIds: search
+        searchWithItemIds: search,
+        clearResults: clear
     }
 });
 

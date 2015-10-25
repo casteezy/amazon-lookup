@@ -1,16 +1,7 @@
-// TODO: use File uploaded data instead. DELETE ME.
-var _itemIds = '075691002589,815150018092';  // Tape measure, 2 pack tumblers
-
-/**
- * Papa Parse - http://papaparse.com/
- */
-var _Papa = Papa;
-
-// TODO: prefix all with module
 var module = angular.module('amazonLookup');
 
 /*
- Array of AWS 'response group' keys to reach desired value to input into AwsResultsService.
+ Array of AWS 'response group' keys to reach desired value to input into ResponseGroupService.
  E.g. Request > IsValid => "True", so { isValid: "True" }
  Note: Assumes root is accounted for (ItemLookupRequest > Items).
  */
@@ -20,66 +11,60 @@ module.value('RequestResponseGroupTrees', {
     itemIds: ['Request', 'ItemLookupRequest', 'ItemId']
 });
 
+/*
+ Array of AWS 'response group' keys to reach desired value to input into ResponseGroupService.
+ Note: Assumes root is accounted for (ItemLookupRequest > Items > Item).
+ */
 module.value('ItemResponseGroupTrees', {
-    name: ['Item', 'ItemAttributes', 'Title'],
-    listPrice: ['Item', 'ItemAttributes', 'ListPrice', 'FormattedPrice'],
-    department: ['Item', 'ItemAttributes', 'Department'],
-    productGroup: ['Item', 'ItemAttributes', 'ProductGroup'],
-    productType: ['Item', 'ItemAttributes', 'ProductTypeName'],
-    upc: ['Item', 'ItemAttributes', 'UPC'],
-    newCount: ['Item', 'OfferSummary', 'TotalNew']
+    upc: ['ItemAttributes', 'UPC'],
+    name: ['ItemAttributes', 'Title'],
+    listPrice: ['ItemAttributes', 'ListPrice', 'FormattedPrice'],
+    department: ['ItemAttributes', 'Department'],
+    productGroup: ['ItemAttributes', 'ProductGroup'],
+    productType: ['ItemAttributes', 'ProductTypeName'],
+    newCount: ['OfferSummary', 'TotalNew']
 });
 
 module.controller('LookupController',
-    function ($scope, $window, $filter, ResultItemsMtrHelper, SavedSearchesMtrHelper, StatusService,
-              IdService, AwsResultsService, ItemResponseGroupTrees, RequestResponseGroupTrees) {
+    function ($scope, $window, $filter, $q, ResultItemsMtrHelper, SavedSearchesMtrHelper, StatusService,
+              IdService, ResponseGroupService, ItemResponseGroupTrees, RequestResponseGroupTrees,
+              CsvService) {
         var self = this;
         self.MtrResults = $scope.$meteorCollection(ResultItems);
         self.codePrint = {}; // for debugging
         self.fileStatus = 0;
         self.clearUpload = clearUpload;
+        //self.itemIdStr = '';
+        var idsQueue = [];
+        var _Papa = Papa; // external library
 
         var papaConfig = {
-            complete: fileParseSuccess,
-            error: fileParseError
+            complete: function fileParseSuccess(results, file) {
+                var idList = IdService.findIds(results.data);
+                var idCount = idList.length;
+
+                while (idList.length > 0) {
+                    var savedIds = idList.splice(0, 10); // only 10 per AWS request
+                    idsQueue.push(savedIds.toString());
+                }
+
+                //self.itemIdStr = IdService.getIdString();
+                self.fileStatus = 1;
+                clearUpload();
+
+                StatusService.logSuccess('File parse success! ID count from file: ' + idCount);
+            },
+            error: function fileParseError(error, file) {
+                StatusService.logError('File parse error: "' + error + '"');
+                self.file = null;
+                self.fileStatus = -1;
+            }
         };
-
-        function fileParseSuccess(results, file) {
-            StatusService.logSuccess('File parse success!');
-
-            angular.forEach(results.data, function (idRow) {
-                IdService.saveIds(idRow);
-            });
-            StatusService.logInfo('Parsed IDs from file: ' + IdService.getIds());
-            StatusService.logInfo('File parse results: ' + results);
-            self.fileStatus = 1;
-            clearUpload();
-
-            var itemIds = IdService.getIdString();
-            ResultItemsMtrHelper.searchWithItemIds(itemIds, function successSearch(data) {
-                StatusService.logSuccess('ResultItems method successful');
-                debugFormat();
-            }, function errorSearch(err) {
-                StatusService.logError('ResultItems method failed: ' + err);
-            });
-        }
-
-        function debugFormat() {
-            self.MtrResults.forEach(function (obj, idx, arr) {
-                angular.forEach(obj, function (value, key) {
-                    self.codePrint[key] = value;
-                });  // for debugging
-            });
-        }
-
-        function fileParseError(error, file) {
-            StatusService.logError('File parse error:' + error);
-            self.file = null;
-            self.fileStatus = -1;
-        }
 
         self.upload = function uploadAndParseFile() {
             StatusService.clear();
+            IdService.resetIds();
+            idsQueue = [];
             _Papa.parse(self.file, papaConfig);
         };
 
@@ -92,41 +77,29 @@ module.controller('LookupController',
             self.fileStatus = 0;
         };
 
-        self.submit = function () {
-            var itemIds = _itemIds;
-            ResultItemsMtrHelper.searchWithItemIds(itemIds, function successSearch(data) {
-                //self.codePrint['Query success!'] = true;
-                StatusService.logSuccess('ResultItems method successful');
-                debugFormat();
-            }, function errorSearch(error) {
-                StatusService.logError('ResultItems method error ' + error);
+        self.submit = function doAwsRequestWithIds() {
+            StatusService.logInfo('AWS requests needed: ' + idsQueue.length);
+            var deferred = $q.defer();
+            var completed = 0;
+            angular.forEach(idsQueue, function(idString, idx) {
+                ResultItemsMtrHelper.searchWithItemIds(idString, function successSearch(data) {
+                    completed++;
+                    if (completed == idsQueue.length) {
+                        deferred.resolve();
+                    }
+                }, function errorSearch(err) {
+                    StatusService.logError('Request error: "' + err + '"');
+                    ResultItemsMtrHelper.clearResults();
+                    completed++;
+                    if (completed == idsQueue.length) {
+                        deferred.resolve();
+                    }
+                });
+            });
+            deferred.promise.then(function success() {
+                parseResultsFromDb();
             });
         };
-
-        // TODO: better name or remove button?
-        self.clicked = function showClicked() {
-            parseResultsFromDb();
-        };
-
-        function logRequestErrors(errorList) {
-            var hasError = false;
-            if (errorList) {
-                if (!angular.isArray(errorList)) {
-                    var errMessage = AwsResultsService.findValue(errorList, ['Code']);
-                    errMessage += ': ' + AwsResultsService.findValue(errorList, ['Message']);
-                    StatusService.logError('AWS Request Error - "' + errMessage + '"');
-                    hasError = true;
-                } else {
-                    angular.forEach(errorList, function (err) {
-                        var errMessage = AwsResultsService.findValue(err, ['Code']);
-                        errMessage += ': ' + AwsResultsService.findValue(err, ['Message']);
-                        StatusService.logError('AWS Request Error - "' + errMessage + '"');
-                    });
-                    hasError = errorList.length > 0;
-                }
-            }
-            return hasError;
-        }
 
         /**
          * Read in AWS responses from database and parse to get desired values for output.
@@ -135,91 +108,68 @@ module.controller('LookupController',
         function parseResultsFromDb() {
             self.results = '';
             if (!self.MtrResults.length) {
+                // TODO Why would no results come back?
+                StatusService.logWarning('No results found.');
                 return;
             }
 
-            var validRequest = true;
-            angular.forEach(self.MtrResults, function (resultData, index) { // array
-                var responseItems = resultData['Items'];
+            angular.forEach(self.MtrResults, function eachRequestResponse(response, index) {
+                StatusService.logInfo('Parsing AWS response for request #' + (index + 1));
+                var isFirstResponse = index === 0;
+                var responseItems = response['Items'];
 
                 // Check validity
-                validRequest = AwsResultsService.findValue(responseItems, angular.copy(RequestResponseGroupTrees.isValid));
-                var errorList = AwsResultsService.findValue(responseItems, angular.copy(RequestResponseGroupTrees.errors));
-                var requestIds = AwsResultsService.findValue(responseItems, angular.copy(RequestResponseGroupTrees.itemIds));
+                var validRequest = ResponseGroupService.findValue(responseItems,
+                    angular.copy(RequestResponseGroupTrees.isValid));
+                var errors = ResponseGroupService.findValue(responseItems,
+                    angular.copy(RequestResponseGroupTrees.errors));
+                var requestIds = ResponseGroupService.findValue(responseItems,
+                    angular.copy(RequestResponseGroupTrees.itemIds));
 
-                var hasErrors = logRequestErrors(errorList);
+                // AWS request can be valid but have errors.
+                handleErrors(errors);
+                if (validRequest === 'True') {
+                    StatusService.logInfo('AWS request #' + (index + 1) + ' valid.');
 
-                /*
-                 TODO: handle errors AND validation
-
-                 valid:
-                 - validRequest === 'True', errorList as array is empty
-                 - validRequest === 'True', errorList as object or primitive is falsy
-                 - validRequest === 'True', as arrays, errorList.length < requestIds.length
-                 - validRequest === 'True', as arrays,
-                    errorList as object or primitive is truthy AND requestIds is array length > 0
-                 - validRequest === 'True', as arrays,
-                 errorList as object or primitive is truthy AND requestIds is array length > 0
-                 */
-
-                if (validRequest === 'True' && !hasErrors) {
-                    StatusService.logSuccess('AWS request valid and successful!');
-                    var foundValues = {};
-                    angular.forEach(ItemResponseGroupTrees, function (valTree, valToFind) {
-                        foundValues[valToFind] = AwsResultsService.findValue(responseItems, angular.copy(valTree));
-                    });
-                    var showHeader = index === 0;
-                    self.results += AwsResultsService.convertToCsv(foundValues, showHeader);
-
-                } else if (validRequest === 'True' && angular.isArray(requestIds)
-                        && angular.isArray(errorList) && (requestIds.length > errorList.length)) {
-                    var foundValues = {};
-                    angular.forEach(ItemResponseGroupTrees, function (valTree, valToFind) {
-                        foundValues[valToFind] = AwsResultsService.findValue(responseItems, angular.copy(valTree));
-                    });
-                    // TODO: redundantly saving searches? pass in UPC as ID
-                    //SavedSearchesMtrHelper.saveSearch(foundValues);
-
-                    var showHeader = index === 0;
-                    self.results += AwsResultsService.convertToCsv(foundValues, showHeader);
-                } else if (validRequest !== 'True') {
-                    StatusService.logError('Invalid AWS request.');
-                } else if (angular.isArray(requestIds) && angular.isArray(errorList)
-                    && (requestIds.length <= errorList.length)) {
-                    StatusService.logError('Unsuccessful item lookup...');
-
-                    angular.forEach(errorList, function (err) { // Array
-                        if (err.Code && err.Message) {
-                            StatusService.logError(err.Code + ': ' + err.Message);
-                        } else {
-                            StatusService.logError(err);
-                        }
-                    });
+                    var singleErrorAndId = !angular.isArray(requestIds) && !angular.isArray(errors);
+                    var allIdsHaveErrors = angular.isArray(requestIds) && angular.isArray(errors)
+                        && (requestIds.length === errors.length);
+                    if (singleErrorAndId || allIdsHaveErrors) {
+                        StatusService.logWarning('No successful AWS results.');
+                    } else {
+                        angular.forEach(responseItems[0]['Item'], function(item, itemIdx) { // array
+                            var result = ResponseGroupService.findValues(item, ItemResponseGroupTrees);
+                            self.results += CsvService.convertToCsv(result, isFirstResponse && itemIdx == 0);
+                        });
+                    }
+                } else {
+                    StatusService.logError('AWS request #' + (index + 1) + ' invalid.');
                 }
             });
-            //StatusService.logInfo('CSV results: ' + self.results);
 
-            /*self.MtrResults.forEach(function(obj, idx, arr) { // should only run once
-             var foundValues = {};
-             var itemData = self.MtrResults[idx]['Items'];
+            if (self.results) {
+                StatusService.logSuccess('AWS results found and ready for download.');
+            }
+            // Clear from db
+            ResultItemsMtrHelper.clearResults();
+        }
 
-             // If AWS request was valid, parse response.
-             var valuesToFind = ItemResponseGroupTrees;
-             for (var val in valuesToFind) {
-             foundValues[val] = AwsResultsService.findValue(itemData, angular.copy(valuesToFind[val]));
-             }
+        function handleErrors(errors) {
+            if (!errors) return;
+            StatusService.logWarning('AWS request error(s) found...');
+            if (!angular.isArray(errors)) {
+                logError(errors)
+            } else if (angular.isArray(errors)) {
+                angular.forEach(errors, function (err) {
+                    logError(err)
+                });
+            }
+        }
 
-             // TODO : replace with helper service
-             $meteor.call('saveSearch', Date.now(), foundValues).then(
-             function success(data) {
-             console.log('saveSearch success!');
-             },
-             function error(err) {
-             console.log('saveSearch error: ' + err);
-             }
-             );
-             self.results += AwsResultsService.convertToCsv(foundValues, idx == 0);
-             });*/
+        function logError(errors) {
+            var errMessage = ResponseGroupService.findValue(errors, ['Code']);
+            errMessage += ': ' + ResponseGroupService.findValue(errors, ['Message']);
+            StatusService.logError(errMessage);
         }
 
         /**

@@ -18,6 +18,8 @@ angular.module('amazonLookup')
         function save(itemIds) {
             if (Array.isArray(itemIds)) {
                 Array.prototype.push.apply(savedIds, itemIds);
+            } else if (angular.isString(itemIds)) {
+                savedIds.push(itemIds);
             }
         }
 
@@ -25,7 +27,7 @@ angular.module('amazonLookup')
          * Get copy of ID array.
          */
         function get() {
-            return angular.copy(savedIds);
+            return savedIds;
         }
 
         /**
@@ -35,10 +37,29 @@ angular.module('amazonLookup')
             return savedIds.toString();
         }
 
+        function findIds(data) {
+            var idList = [];
+            angular.forEach(data, function (idRow) { // array
+                if (angular.isArray(idRow)) {
+                    angular.forEach(idRow, function(id) {
+                        idList.push(id);
+                    });
+                } else {
+                    // can have one ID per row
+                    idList.push(idRow);
+                }
+            });
+            return idList;
+        }
+
+        var list = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
+        var x = list.splice(0, 10);
+
         return {
             resetIds: reset,
-            saveIds: save,
+            saveId: save,
             getIds: get,
-            getIdString: getString
+            getIdString: getString,
+            findIds: findIds
         }
     });

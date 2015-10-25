@@ -1,6 +1,24 @@
-.status-alerts .alert .message {
+.status-alerts table.message-table .message {
+    white-space: pre-line;
+}
+.status-alerts .alert ul {
+    overflow-x: scroll;
+}
+.status-alerts table.message-table {
+    width: 100%;
+}
+.status-alerts table.message-table .message {
     word-break: break-all;
 }
-/*
-TODO: MOVE ALL STYLES HERE
-*/
+.status-alerts {
+    height: 300px;
+    overflow-y: scroll;
+}
+
+.results-form {
+    margin-bottom: 15px;
+}
+
+.results-form textarea {
+    margin-bottom: 10px;
+}

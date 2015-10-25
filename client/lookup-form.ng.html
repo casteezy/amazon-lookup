@@ -5,19 +5,8 @@
             <h4 style="margin:0;padding:0;">AWS Item Lookup</h4>
         </div>
         <div class="panel-body">
-            <div class="col-sm-12">
-                <h4>Debug Mode</h4>
-                <pre style="margin-bottom:20px;" class="">
-                    <p ng-repeat="(key, value) in lookupCtrl.codePrint"><b>{{key}}</b>: <br>{{value}}</p>
-                </pre>
-            </div>
-            <div class="col-sm-12">
-                <div ng-include="'client/status-alerts.ng.html'"></div>
-            </div>
-
             <div class="col-sm-12" style="margin-bottom: 10px;">
                 <h4>Upload</h4>
-
                 <div class="form-group">
                     <div class="form-control" file-input="lookupCtrl.file" on-change="lookupCtrl.fileChanged()"></div>
                     <p class="help-block">Upload UPCs in CSV format.</p>
@@ -35,22 +24,23 @@
                 </div>
             </div>
 
-            <section class="col-sm-12">
+            <section class="col-sm-12 results-form">
                 <h4>Results</h4>
-
                 <form id="csvForm">
                     <div class="form-group">
-                        <textarea placeholder="CSV list of item UPCs" ng-model="lookupCtrl.results" class="form-control"
-                                  style="margin-bottom:10px;" rows="10"></textarea>
+                        <textarea readonly ng-model="lookupCtrl.results" class="form-control" rows="10">
+                        </textarea>
                         <button type="submit" ng-click="lookupCtrl.submit()" class="btn btn-primary btn-default">
-                            Search
+                            Submit
                         </button>
-                        <button ng-click="lookupCtrl.clicked()" class="btn btn-default">Show Results</button>
                         <a href="" ng-click="lookupCtrl.download()" class="btn btn-default">Download Results</a>
                     </div>
                 </form>
-
             </section>
+
+            <div class="col-sm-12">
+                <div ng-include="'client/status-alerts.ng.html'"></div>
+            </div>
 
         </div>
     </div>
