@@ -1,8 +1,5 @@
 OperationHelper = apac.OperationHelper;
 
-/*
-
- */
 var updateResultsCallback = function (resultsDb, jsResults, rawXmlResults) {
     console.log('Inside callback, updating DB...');
 
@@ -27,6 +24,7 @@ var updateResultsCallback = function (resultsDb, jsResults, rawXmlResults) {
             console.log('Success on ResultItems \'insert\'! ' + id);
         }
     });
+    return results;
 };
 
 Meteor.methods({
@@ -37,15 +35,6 @@ Meteor.methods({
     },
     clearResults: function() {
         ResultItems.remove({});
-    },
-    saveSearch: function(id, searchData) {
-        SavedSearches.insert({ id: id, searchData: searchData }, function callback(err, id) {
-            if (err) {
-                console.log('Fail on SavedSearches \'insert\' - ' + err);
-            } else {
-                console.log('Success on SavedSearches \'insert\'! ' + id);
-            }
-        });
     }
 });
 
@@ -53,6 +42,7 @@ function doSearchByItemId(resultDb, itemIds, callback) {
     if (!itemIds || !itemIds.length) {
         return;
     }
+    console.log('Building request for IDs: ' + itemIds);
     /*
      Scratchpad link:
      http://webservices.amazon.com/scratchpad/index.html
@@ -80,7 +70,7 @@ function doSearchByItemId(resultDb, itemIds, callback) {
         console.log('Ophelper XML: ' + !!rawXmlResults);
         if (!err) {
             console.log('Ophelper success!');
-            callback && callback(resultDb, jsResults, rawXmlResults);
+            return callback(resultDb, jsResults, rawXmlResults);
         }
     });
 }

@@ -31,22 +31,3 @@ module.factory('ResultItemsMtrHelper', function ($meteor) {
         clearResults: clear
     }
 });
-
-module.factory('SavedSearchesMtrHelper', function ($meteor) {
-    function save(searchedValues, successCallback, errorCallback) {
-        $meteor.call('saveSearch', Date.now(), searchedValues).then(
-            function success(data) {
-                console.log('saveSearch method success!');
-                successCallback && successCallback(data);
-            },
-            function error(err) {
-                console.log('saveSearch method error: ' + err);
-                errorCallback && errorCallback(err);
-            }
-        );
-    }
-
-    return {
-        saveSearch: save
-    }
-});

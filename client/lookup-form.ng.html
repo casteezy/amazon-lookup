@@ -9,18 +9,13 @@
                 <h4>Upload</h4>
                 <div class="form-group">
                     <div class="form-control" file-input="lookupCtrl.file" on-change="lookupCtrl.fileChanged()"></div>
-                    <p class="help-block">Upload UPCs in CSV format.</p>
-
-                    <div ng-switch="lookupCtrl.fileStatus">
-                        <button ng-switch-when="1" class="btn btn-sm btn-success">Upload Success</button>
-                        <button ng-switch-when="-1" class="btn btn-sm btn-error">Upload Fail</button>
-                        <button ng-switch-default class="btn btn-sm btn-primary" ng-click="lookupCtrl.upload()"
-                                ng-disabled="!lookupCtrl.file">Upload
-                        </button>
-                        <button class="btn btn-sm btn-default" ng-disabled="!lookupCtrl.file"
-                                ng-click="lookupCtrl.clearUpload()">Clear
-                        </button>
-                    </div>
+                    <p class="help-block">Upload UPCs in CSV format. No headers.</p>
+                    <button class="btn btn-primary" ng-click="lookupCtrl.upload()"
+                            ng-disabled="!lookupCtrl.file">Upload
+                    </button>
+                    <button class="btn btn-default" ng-disabled="!lookupCtrl.file"
+                            ng-click="lookupCtrl.clearUpload()">Clear
+                    </button>
                 </div>
             </div>
 
@@ -30,10 +25,12 @@
                     <div class="form-group">
                         <textarea readonly ng-model="lookupCtrl.results" class="form-control" rows="10">
                         </textarea>
-                        <button type="submit" ng-click="lookupCtrl.submit()" class="btn btn-primary btn-default">
+                        <button ng-disabled="lookupCtrl.disableSubmit" type="submit" ng-click="lookupCtrl.submit()"
+                                class="btn btn-primary btn-default">
                             Submit
                         </button>
-                        <a href="" ng-click="lookupCtrl.download()" class="btn btn-default">Download Results</a>
+                        <a href="" ng-disabled="!lookupCtrl.results" ng-click="lookupCtrl.download()"
+                           class="btn btn-default">Download Results</a>
                     </div>
                 </form>
             </section>
