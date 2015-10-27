@@ -1,4 +1,7 @@
-angular.module('amazonLookup')
+(function(angular) {
+    'use strict';
+
+    angular.module('amazonLookup')
     .factory('IdService', function () {
         /**
          * Get all IDs from an object with arrays or primitive values.
@@ -42,3 +45,5 @@ angular.module('amazonLookup')
             clear: reset
         }
     });
+
+})(window.angular);

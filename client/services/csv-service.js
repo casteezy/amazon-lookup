@@ -1,58 +1,63 @@
-angular.module('amazonLookup')
-    .factory('CsvService', function () {
-        /**
-         * Converts all values into CSV string. Uses keys as header.
-         * Values must be primitive types (objects won't parse properly).
-         */
-        function convertToCsvWithHeaders(obj) {
-            var csvColumns = '';
-            var csvOutput = '';
+(function(angular) {
+    'use strict';
 
-            var objKeys = Object.keys(obj);
-            for (var i = 0; i < objKeys.length; i++) {
-                var key = objKeys[i];
+    angular.module('amazonLookup')
+        .factory('CsvService', function () {
+            /**
+             * Converts all values into CSV string. Uses keys as header.
+             * Values must be primitive types (objects won't parse properly).
+             */
+            function convertToCsvWithHeaders(obj) {
+                var csvColumns = '';
+                var csvOutput = '';
 
-                csvColumns += key;
-                if (obj[key]) {
-                    csvOutput += '\"' + obj[key] + '\"';
-                } else {
-                    csvOutput += 'null';
+                var objKeys = Object.keys(obj);
+                for (var i = 0; i < objKeys.length; i++) {
+                    var key = objKeys[i];
+
+                    csvColumns += key;
+                    if (obj[key]) {
+                        csvOutput += '\"' + obj[key] + '\"';
+                    } else {
+                        csvOutput += 'null';
+                    }
+                    if (i < (objKeys.length - 1)) {
+                        csvColumns += ',';
+                        csvOutput += ',';
+                    }
                 }
-                if (i < (objKeys.length - 1)) {
-                    csvColumns += ',';
-                    csvOutput += ',';
-                }
+                return csvColumns + '\n' + csvOutput + '\n';
             }
-            return csvColumns + '\n' + csvOutput + '\n';
-        }
 
-        /**
-         * Converts all values into CSV string
-         */
-        function convertToCsv(obj) {
-            var csvOutput = '';
-            // convert to forEach? what's more performant? is this null safe?
-            var objKeys = Object.keys(obj);
-            for (var i = 0; i < objKeys.length; i++) {
-                var key = objKeys[i];
+            /**
+             * Converts all values into CSV string
+             */
+            function convertToCsv(obj) {
+                var csvOutput = '';
+                // convert to forEach? what's more performant? is this null safe?
+                var objKeys = Object.keys(obj);
+                for (var i = 0; i < objKeys.length; i++) {
+                    var key = objKeys[i];
 
-                if (obj[key]) {
-                    csvOutput += '\"' + obj[key] + '\"';
-                } else {
-                    csvOutput += 'null';
+                    if (obj[key]) {
+                        csvOutput += '\"' + obj[key] + '\"';
+                    } else {
+                        csvOutput += 'null';
+                    }
+                    if (i < (objKeys.length - 1)) {
+                        csvOutput += ',';
+                    }
                 }
-                if (i < (objKeys.length - 1)) {
-                    csvOutput += ',';
-                }
+                return csvOutput + '\n';
             }
-            return csvOutput + '\n';
-        }
 
-        function convertInternal(obj, includeHeaders) {
-            return includeHeaders ? convertToCsvWithHeaders(obj) : convertToCsv(obj);
-        }
+            function convertInternal(obj, includeHeaders) {
+                return includeHeaders ? convertToCsvWithHeaders(obj) : convertToCsv(obj);
+            }
 
-        return {
-            convertToCsv: convertInternal
-        };
-    });
+            return {
+                convertToCsv: convertInternal
+            };
+        });
+
+})(window.angular);

@@ -1,4 +1,7 @@
-angular.module('amazonLookup')
+(function(angular) {
+    'use strict';
+
+    angular.module('amazonLookup')
     .factory('StatusService', function ($rootScope, $filter) {
         var statusLogs = [];
 
@@ -46,3 +49,5 @@ angular.module('amazonLookup')
             }
         };
     });
+
+})(window.angular);

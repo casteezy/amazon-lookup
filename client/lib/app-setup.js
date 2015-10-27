@@ -1,5 +1,9 @@
-/**
- * Sets up angular module.
- */
+(function(angular) {
+    'use strict';
 
-angular.module('amazonLookup', ['angular-meteor']);
+    /**
+     * Set up angular module.
+     */
+    angular.module('amazonLookup', ['angular-meteor']);
+
+})(window.angular);

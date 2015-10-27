@@ -1,4 +1,7 @@
-angular.module('amazonLookup')
+(function (angular) {
+    'use strict';
+
+    angular.module('amazonLookup')
     /**
      * Find a value from data converted from XML to JSON.
      * All objects and primitive values are wrapped in an array.
@@ -46,3 +49,5 @@ angular.module('amazonLookup')
             findValues: findValues
         };
     });
+
+})(window.angular);
