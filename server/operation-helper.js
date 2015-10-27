@@ -1,6 +1,6 @@
 OperationHelper = apac.OperationHelper;
 
-var updateResultsCallback = function (resultsDb, jsResults, rawXmlResults) {
+function updateResultsCallback(resultsDb, jsResults, rawXmlResults) {
     console.log('Inside callback, updating DB...');
 
     var results = {};
@@ -25,7 +25,7 @@ var updateResultsCallback = function (resultsDb, jsResults, rawXmlResults) {
         }
     });
     return results;
-};
+}
 
 Meteor.methods({
     searchByItemId: function (itemIds) {
@@ -33,7 +33,7 @@ Meteor.methods({
         var searchResults = doAsyncSearch(ResultItems, itemIds, updateResultsCallback);
         return searchResults;
     },
-    clearResults: function() {
+    clearResults: function () {
         ResultItems.remove({});
     }
 });

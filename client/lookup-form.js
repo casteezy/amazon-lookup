@@ -1,8 +1,7 @@
-(function (angular) {
+(function (angular, Papa) {
     'use strict';
 
     var module = angular.module('amazonLookup');
-    var _Papa = Papa; // External library for parsing CSV files
 
     /*
      Array of AWS 'response group' keys to reach desired value to input into ResponseGroupService.
@@ -89,7 +88,7 @@
                 self.idsQueue = [];
                 StatusService.clear();
                 self.results = '';
-                _Papa.parse(self.file, papaConfig);
+                Papa.parse(self.file, papaConfig);
             };
 
             /**
@@ -221,4 +220,5 @@
                 elem.click();
             };
         }); // end controller
-})(window.angular);
+
+})(window.angular, window.Papa);
