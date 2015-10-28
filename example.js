@@ -1,3 +1,4 @@
+/*
 // Mock object
 var Parse = {
     initialize: function (a, b) {
@@ -106,4 +107,4 @@ angular.module('cms').controller('DashboardCtrl', ['$scope', 'someService', func
         $scope.someList = result;
     }, function error(error) {
     })
-}]);
+}]);*/

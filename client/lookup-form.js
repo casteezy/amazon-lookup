@@ -37,7 +37,7 @@
                 self.idsQueue = [];
                 StatusService.clear();
                 self.results = '';
-                PapaParseService.parse(self.file, papaConfig).then(function fileParseSuccess(results) {
+                PapaParseService.parse(self.file).then(function fileParseSuccess(results) {
                     var idList = IdService.findIds(results.data);
                     var idCount = idList.length; // Save before slice
 

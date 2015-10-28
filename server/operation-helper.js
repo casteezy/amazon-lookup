@@ -24,6 +24,8 @@ function updateResultsCallback(resultsDb, jsResults, rawXmlResults) {
             console.log('Success on ResultItems \'insert\'! ' + id);
         }
     });
+    // TODO if the results are returned correctly... why store them?
+    // could be an enhancement to add 'previous searches' but is otherwise a hassle to maintain.
     return results;
 }
 
@@ -38,7 +40,7 @@ Meteor.methods({
     }
 });
 
-function doSearchByItemId(resultDb, itemIds, callback) {
+function doSearchByItemId(resultDb, itemIds) {//, callback) {
     if (!itemIds || !itemIds.length) {
         return;
     }
@@ -65,12 +67,13 @@ function doSearchByItemId(resultDb, itemIds, callback) {
         //'MerchantId': 'Amazon', //Only items sold by Amazon
         'SearchIndex': 'All',
         'ResponseGroup': 'ItemAttributes,OfferSummary'
-    }, function (err, jsResults, rawXmlResults) {
+    }, function response(err, jsResults, rawXmlResults) {
         console.log('Ophelper results: ' + !!jsResults);
         console.log('Ophelper XML: ' + !!rawXmlResults);
         if (!err) {
             console.log('Ophelper success!');
-            return callback(resultDb, jsResults, rawXmlResults);
+            return updateResultsCallback(resultDb, jsResults, rawXmlResults);
         }
+        return err;
     });
 }

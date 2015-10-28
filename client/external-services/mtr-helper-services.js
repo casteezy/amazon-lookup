@@ -1,7 +1,7 @@
 (function(angular) {
     'use strict';
 
-    var module = angular.module('meteorHelpers');
+    var module = angular.module('meteorHelpers', []);
 
     module.factory('ResultItemsMtrHelper', function ResultItemsMtrHelperProvider($q, $meteor) {
         function getResults() {
