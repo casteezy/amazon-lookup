@@ -21,7 +21,7 @@
         }
 
         function clear() {
-            var deferred = $q.defer();
+            /*var deferred = $q.defer();
             $meteor.call('clearResults').then(
                 function success(data) {
                     deferred.resolve(data);
@@ -30,7 +30,7 @@
                     deferred.reject(err);
                 }
             );
-            return deferred.promise;
+            return deferred.promise;*/
         }
 
         return {
