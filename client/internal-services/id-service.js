@@ -4,7 +4,8 @@
     angular.module('amazonLookup')
     .factory('IdService', function () {
         /**
-         * Get all IDs from an object with arrays or primitive values.
+         * @param data object or value to search through
+         * @return all IDs from an object with arrays or primitive values.
          */
         function findIds(data) {
             var idList = [];
@@ -21,28 +22,8 @@
             return idList;
         }
 
-        var savedIds = [];
-        function queue(itemIds) {
-            if (Array.isArray(itemIds)) {
-                Array.prototype.push.apply(savedIds, itemIds);
-            } else if (angular.isString(itemIds)) {
-                savedIds.push(itemIds);
-            }
-        }
-
-        function getQueue() {
-            return savedIds;
-        }
-
-        function reset() {
-            savedIds = [];
-        }
-
         return {
-            findIds: findIds,
-            queue: queue,
-            getQueue: getQueue,
-            clear: reset
+            findIds: findIds
         }
     });
 

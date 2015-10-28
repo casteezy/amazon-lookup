@@ -1,12 +1,40 @@
 (function (angular) {
     'use strict';
 
-    angular.module('amazonLookup')
+    var module = angular.module('awsResponseGroupHelpers', []);
+
+    /*
+     Array of AWS 'response group' keys to reach desired value to input into ResponseGroupService.
+     E.g. Request > IsValid => "True", so { isValid: "True" }
+     Note: Assumes root is accounted for (ItemLookupRequest > Items).
+     */
+    module.value('RequestResponseGroupTrees', {
+        isValid: ['Request', 'IsValid'],
+        errors: ['Request', 'Errors', 'Error'],
+        itemIds: ['Request', 'ItemLookupRequest', 'ItemId']
+    });
+
+    /*
+     Array of AWS 'response group' keys to reach desired value to input into ResponseGroupService.
+     Note: Assumes root is accounted for (ItemLookupRequest > Items > Item).
+     */
+    module.value('ItemResponseGroupTrees', {
+        upc: ['ItemAttributes', 'UPC'],
+        name: ['ItemAttributes', 'Title'],
+        listPrice: ['ItemAttributes', 'ListPrice', 'FormattedPrice'],
+        lowestNewPrice: ['OfferSummary', 'LowestNewPrice', 'FormattedPrice'],
+        department: ['ItemAttributes', 'Department'],
+        productGroup: ['ItemAttributes', 'ProductGroup'],
+        productType: ['ItemAttributes', 'ProductTypeName'],
+        newCount: ['OfferSummary', 'TotalNew']
+    });
+
+
     /**
      * Find a value from data converted from XML to JSON.
      * All objects and primitive values are wrapped in an array.
      */
-    .factory('ResponseGroupService', function () {
+    module.factory('ResponseGroupService', function () {
         /**
          * Recursively searches through object/array until either last element in searchPropList is reached
          * or until null

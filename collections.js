@@ -2,4 +2,4 @@
 
 ResultItems = new Mongo.Collection("resultItems");
 
-SavedSearches = new Mongo.Collection("savedSearches");
+//SavedSearches = new Mongo.Collection("savedSearches");

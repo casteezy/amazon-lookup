@@ -1,36 +1,10 @@
-(function (angular, Papa) {
+(function (angular) {
     'use strict';
 
     var module = angular.module('amazonLookup');
 
-    /*
-     Array of AWS 'response group' keys to reach desired value to input into ResponseGroupService.
-     E.g. Request > IsValid => "True", so { isValid: "True" }
-     Note: Assumes root is accounted for (ItemLookupRequest > Items).
-     */
-    module.value('RequestResponseGroupTrees', {
-        isValid: ['Request', 'IsValid'],
-        errors: ['Request', 'Errors', 'Error'],
-        itemIds: ['Request', 'ItemLookupRequest', 'ItemId']
-    });
-
-    /*
-     Array of AWS 'response group' keys to reach desired value to input into ResponseGroupService.
-     Note: Assumes root is accounted for (ItemLookupRequest > Items > Item).
-     */
-    module.value('ItemResponseGroupTrees', {
-        upc: ['ItemAttributes', 'UPC'],
-        name: ['ItemAttributes', 'Title'],
-        listPrice: ['ItemAttributes', 'ListPrice', 'FormattedPrice'],
-        lowestNewPrice: ['OfferSummary', 'LowestNewPrice', 'FormattedPrice'],
-        department: ['ItemAttributes', 'Department'],
-        productGroup: ['ItemAttributes', 'ProductGroup'],
-        productType: ['ItemAttributes', 'ProductTypeName'],
-        newCount: ['OfferSummary', 'TotalNew']
-    });
-
     module.controller('LookupController',
-        function ($scope, $meteor, $window, $filter, $q, ResultItemsMtrHelper, CsvService, StatusService,
+        function ($scope, $meteor, $window, $filter, $q, PapaParseService, ResultItemsMtrHelper, CsvService, StatusService,
                   IdService, ResponseGroupService, ItemResponseGroupTrees, RequestResponseGroupTrees) {
             var self = this;
             self.MtrResults = $scope.$meteorCollection(ResultItems);
@@ -39,30 +13,6 @@
             self.file = null;
             self.results = '';
             self.disableSubmit = true;
-
-            var papaConfig = {
-                complete: function fileParseSuccess(results) {
-                    var idList = IdService.findIds(results.data);
-                    var idCount = idList.length; // Save before slice
-
-                    while (idList.length > 0) {
-                        var savedIds = idList.splice(0, 10); // Only 10 per AWS request
-                        //IdService.queue(savedIds);
-                        self.idsQueue.push(savedIds.toString());
-                    }
-                    StatusService.logInfo('"' + self.file.name + '" parsed. UPCs: ' + self.idsQueue.toString());
-                    //self.uploaded = true;
-                    $scope.$broadcast('clearFileFromUploader');
-                    self.file = null;
-                    self.disableSubmit = false;
-                },
-                error: function fileParseError(error) {
-                    self.idsQueue = []; // All new queue
-                    StatusService.logError('File parse error: "' + error + '"');
-                    //self.uploaded = false;
-                    self.file = null;
-                }
-            };
 
             self.fileChanged = function () {
                 //self.uploaded = false;
@@ -78,7 +28,6 @@
             function clearAll() {
                 $scope.$broadcast('clearFileFromUploader');
                 StatusService.clear();
-                //IdService.clear();
                 //self.uploaded = false;
                 self.file = null;
                 self.idsQueue = []; // All new queue
@@ -88,7 +37,25 @@
                 self.idsQueue = [];
                 StatusService.clear();
                 self.results = '';
-                Papa.parse(self.file, papaConfig);
+                PapaParseService.parse(self.file, papaConfig).then(function fileParseSuccess(results) {
+                    var idList = IdService.findIds(results.data);
+                    var idCount = idList.length; // Save before slice
+
+                    while (idList.length > 0) {
+                        var savedIds = idList.splice(0, 10); // Only 10 per AWS request
+                        self.idsQueue.push(savedIds.toString());
+                    }
+                    StatusService.logInfo('"' + self.file.name + '" parsed. UPCs: ' + self.idsQueue.toString());
+                    //self.uploaded = true;
+                    $scope.$broadcast('clearFileFromUploader');
+                    self.file = null;
+                    self.disableSubmit = false;
+                }, function fileParseError(error) {
+                    self.idsQueue = []; // All new queue
+                    StatusService.logError('File parse error: "' + error + '"');
+                    //self.uploaded = false;
+                    self.file = null;
+                });
             };
 
             /**
@@ -111,22 +78,30 @@
                 });
             };
 
+            /**
+             * Does a search per each element in the requestQueue array.
+             * @param requestQueue list of elements to do a search with
+             * @param deferred to resolve once completed
+             * @return promise, to be resolved when all searches are successful
+             */
             function doAllRequests(requestQueue, deferred) {
                 var requestIds = requestQueue.splice(0, 1); // one element
-                ResultItemsMtrHelper.searchWithItemIds(requestIds.toString(), function successSearch() {
-                    if (requestQueue == 0) {
-                        deferred.resolve();
-                    } else {
-                        doAllRequests(requestQueue);
-                    }
-                }, function errorSearch(err) {
-                    StatusService.logError('Request error: "' + err + '"');
-                    if (requestQueue == 0) {
-                        deferred.resolve();
-                    } else {
-                        doAllRequests(requestQueue);
-                    }
-                });
+                ResultItemsMtrHelper.searchWithItemIds(requestIds.toString())
+                    .then(function successSearch(data) {
+                        if (requestQueue == 0) {
+                            deferred.resolve(data);
+                        } else {
+                            doAllRequests(requestQueue);
+                        }
+                    }, function errorSearch(err) {
+                        StatusService.logError('Request error: "' + err + '"');
+                        if (requestQueue == 0) {
+                            // Should the search stop if one AWS request fails?
+                            deferred.reject(err);
+                        } else {
+                            doAllRequests(requestQueue);
+                        }
+                    });
             }
 
             /**
