@@ -58,12 +58,12 @@
             </section>
 
             <section class="col-sm-12 results-form">
-                <h4>Progress</h4>
+                <h4 class="section-header">Progress</h4>
                 <div ng-include="'client/status-alerts/status-alerts.ng.html'"></div>
             </section>
 
             <section class="col-sm-12">
-                <h4>Results</h4>
+                <h4 class="section-header">Results</h4>
                 <pre class="results-preview">{{lookupCtrl.results}}</pre>
                 <a href="" ng-disabled="!lookupCtrl.results" ng-click="lookupCtrl.download()"
                    class="pull-right btn btn-primary">Download</a>

@@ -30,3 +30,6 @@
     overflow: scroll;
     word-wrap: normal;
 }
+h4.section-header {
+    margin-top: 1.5em;
+}
