@@ -1,3 +1,4 @@
+
 (function (angular) {
     'use strict';
 
@@ -29,7 +30,13 @@
         productType: ['ItemAttributes', 'ProductTypeName'],
         newCount: ['OfferSummary', 'TotalNew']
     });
+/*
+    TODO:
+    - remove MtrResults collection from angular code
+    - make UI elements responsive to server callback codes
 
+    - wrap all callbacks in angular promises, try to wrap in own angular services
+ */
     module.controller('LookupController',
         function ($scope, $meteor, $window, $filter, $q, ResultItemsMtrHelper, CsvService, StatusService,
                   IdService, ResponseGroupService, ItemResponseGroupTrees, RequestResponseGroupTrees) {
@@ -40,6 +47,8 @@
             self.file = null;
             self.results = '';
             self.disableSubmit = true;
+
+            self.account = {};
 
             var papaConfig = {
                 complete: function fileParseSuccess(results) {
@@ -106,7 +115,7 @@
                 var requestPromise = deferred.promise;
                 requestPromise.then(function success() {
                     parseResultsFromDb();
-                    ResultItemsMtrHelper.clearResults(function success() {
+                    ResultItemsMtrHelper.clearResults().then(function success() {
                         self.idsQueue = [];
                     });
                 });
@@ -114,13 +123,13 @@
 
             function doAllRequests(requestQueue, deferred) {
                 var requestIds = requestQueue.splice(0, 1); // one element
-                ResultItemsMtrHelper.searchWithItemIds(requestIds.toString(), function successSearch() {
+                ResultItemsMtrHelper.searchWithItemIds(requestIds.toString()).then(function successSearch() {
                     if (requestQueue == 0) {
                         deferred.resolve();
                     } else {
                         doAllRequests(requestQueue);
                     }
-                }, function errorSearch(err) {
+                }).catch(function errorSearch(err) {
                     StatusService.logError('Request error: "' + err + '"');
                     if (requestQueue == 0) {
                         deferred.resolve();

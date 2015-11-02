@@ -5,6 +5,21 @@
             <h4 style="margin:0;padding:0;">AWS Item Lookup</h4>
         </div>
         <div class="panel-body">
+            <div class="col-sm-12">
+                {{lookupCtrl.account | json}}
+                <div class="form-group">
+                    <label for="awsAssocTag">Associate Tag: </label>
+                    <input id="awsAssocTag" type="text" class="form-control" ng-model="lookupCtrl.account.associateTag" />
+                </div>
+                <div class="form-group">
+                    <label for="awsId">ID: </label>
+                    <input id="awsId" type="text" class="form-control" ng-model="lookupCtrl.account.id" />
+                </div>
+                <div class="form-group">
+                    <label for="awsSecretKey">Secret Key: </label>
+                    <input id="awsSecretKey" type="password" class="form-control" ng-model="lookupCtrl.account.secretKey"/>
+                </div>
+            </div>
             <div class="col-sm-12" style="margin-bottom: 10px;">
                 <h4>Upload</h4>
                 <div class="form-group">
