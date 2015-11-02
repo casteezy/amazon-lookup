@@ -2,14 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="046f2600-164c-4642-8a82-14e0a280d36d" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/public/barcode.ico" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/client/amazon-lookup.html" afterPath="$PROJECT_DIR$/client/amazon-lookup.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/client/internal-services/log-status-service.js" afterPath="$PROJECT_DIR$/client/internal-services/log-status-service.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/client/lookup/lookup-form.js" afterPath="$PROJECT_DIR$/client/lookup/lookup-form.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/client/lookup/lookup-form.ng.html" afterPath="$PROJECT_DIR$/client/lookup/lookup-form.ng.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/client/status-alerts/status-alerts.ng.html" afterPath="$PROJECT_DIR$/client/status-alerts/status-alerts.ng.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/client/styles.css" afterPath="$PROJECT_DIR$/client/styles.css" />
     </list>
     <list id="9d07affd-9ee4-45f3-bdf1-7fab41f64bef" name="Secondary" comment="" />
     <list id="2d3ac17c-9f39-4c92-912a-9bedb4cafe40" name="Third" comment="" />
@@ -45,7 +38,7 @@
       <file leaf-file-name="styles.css" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/client/styles.css">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.8152753">
+            <state vertical-scroll-proportion="0.7941176">
               <caret line="27" column="17" selection-start-line="27" selection-start-column="17" selection-end-line="27" selection-end-column="17" />
               <folding />
             </state>
@@ -360,7 +353,6 @@
     <property name="restartRequiresConfirmation" value="true" />
     <property name="com.intellij.ide.scratch.NewScratchFileAction" value="JSON" />
     <property name="js-jscs-nodeInterpreter" value="C:\Program Files\NodeJS\node.exe" />
-    <property name="FullScreen" value="false" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
@@ -568,7 +560,13 @@
       <option name="project" value="LOCAL" />
       <updated>1446441445264</updated>
     </task>
-    <option name="localTasksCounter" value="15" />
+    <task id="LOCAL-00015" summary="Tweaks + favicon">
+      <created>1446448623961</created>
+      <option name="number" value="00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1446448623961</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="TodoView" selected-index="2">
@@ -589,7 +587,7 @@
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32896176" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39018953" sideWeight="0.50421494" order="11" side_tool="true" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32664436" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3121516" sideWeight="0.49578503" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3121516" sideWeight="0.49578503" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32969433" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4381271" sideWeight="0.49578503" order="10" side_tool="false" content_ui="tabs" />
@@ -655,7 +653,8 @@
     <MESSAGE value="Meteor angular package upgrade" />
     <MESSAGE value="Happy paths working!" />
     <MESSAGE value="Disabling buttons based on form" />
-    <option name="LAST_COMMIT_MESSAGE" value="Disabling buttons based on form" />
+    <MESSAGE value="Tweaks + favicon" />
+    <option name="LAST_COMMIT_MESSAGE" value="Tweaks + favicon" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1053,7 +1052,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/client/styles.css">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.8152753">
+        <state vertical-scroll-proportion="0.7941176">
           <caret line="27" column="17" selection-start-line="27" selection-start-column="17" selection-end-line="27" selection-end-column="17" />
           <folding />
         </state>
