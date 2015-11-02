@@ -1,0 +1,35 @@
+.panel-spacer {
+    margin-top: 10px;
+}
+.panel-heading .lookup-header {
+    margin: 0;
+    padding: 0;
+}
+.status-alerts table.message-table .message {
+    white-space: pre-line;
+}
+.status-alerts .alert ul {
+    overflow-x: scroll;
+}
+.status-alerts table.message-table {
+    width: 100%;
+}
+.status-alerts table.message-table .message {
+    word-break: break-all;
+}
+.status-alerts {
+    height: 18em;
+    overflow-y: scroll;
+}
+.upcIds {
+    height: 14em;
+}
+.results-preview {
+    min-height: 5em;
+    max-height: 15em;
+    overflow: scroll;
+    word-wrap: normal;
+}
+h4.section-header {
+    margin-top: 1.5em;
+}

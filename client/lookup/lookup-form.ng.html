@@ -1,0 +1,75 @@
+<section class="row" ng-controller="LookupController as lookupCtrl">
+
+    <div class="panel panel-default panel-spacer">
+        <div class="panel-heading">
+            <h4 class="lookup-header">AWS Item Lookup</h4>
+        </div>
+
+        <div class="panel-body">
+            <section>
+                <section class="col-sm-4">
+                    <form name="awsLookupForm">
+                        <div class="form-group">
+                            <label for="awsAssocTag">Associate Tag: </label>
+                            <input id="awsAssocTag" type="text" placeholder="1234-5678-9012" class="form-control"
+                                   required autocomplete=on ng-model="lookupCtrl.account.associateTag"/>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="awsId">Access Key ID: </label>
+                            <input id="awsId" type="text" class="form-control"
+                                   required ng-model="lookupCtrl.account.id"/>
+                        </div>
+                        <div class="form-group">
+                            <label for="awsSecretKey">Secret Access Key: </label>
+                            <input id="awsSecretKey" type="password" class="form-control"
+                                   required ng-model="lookupCtrl.account.secretKey"/>
+                        </div>
+                    </form>
+                </section>
+
+                <section class="col-sm-4 upload-form">
+                    <div class="form-group">
+                        <label for="custom-uploader">File Upload: </label>
+
+                        <div class="form-control" file-input="lookupCtrl.file"
+                             id="custom-uploader" on-change="lookupCtrl.fileChanged()"></div>
+                        <p class="help-block">Upload UPCs in CSV format. No headers.</p>
+                        <button class="btn btn-primary btn-sm pull-right" ng-click="lookupCtrl.upload()"
+                                ng-disabled="!lookupCtrl.file || lookupCtrl.uploaded">Upload
+                        </button>
+                    </div>
+                </section>
+
+                <section class="col-sm-4">
+                    <label>UPCs: </label>
+                    <pre class="upcIds">{{lookupCtrl.idsQueue.toString()}}</pre>
+
+                    <div class="pull-right">
+                        <button ng-disabled="lookupCtrl.disableSubmit" type="submit" ng-click="lookupCtrl.submit()"
+                                class="btn btn-primary btn-default left-btn">Submit
+                        </button>
+                        <button class="btn btn-default"
+                                ng-click="lookupCtrl.clearClicked()">Clear
+                        </button>
+                    </div>
+                </section>
+
+            </section>
+
+            <section class="col-sm-12 results-form">
+                <h4 class="section-header">Progress</h4>
+                <div ng-include="'client/status-alerts/status-alerts.ng.html'"></div>
+            </section>
+
+            <section class="col-sm-12">
+                <h4 class="section-header">Results</h4>
+                <pre class="results-preview">{{lookupCtrl.results}}</pre>
+                <a href="" ng-disabled="!lookupCtrl.results" ng-click="lookupCtrl.download()"
+                   class="pull-right btn btn-primary">Download</a>
+            </section>
+
+        </div>
+    </div>
+
+</section>
