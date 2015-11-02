@@ -2,70 +2,72 @@
 
     <div class="panel panel-default" style="margin-top:10px;">
         <div class="panel-heading">
-            <h4 style="margin:0;padding:0;">AWS Item Lookup</h4>
+            <h4 class="lookup-header">AWS Item Lookup</h4>
         </div>
+
         <div class="panel-body">
-            <div class="col-sm-12" style="margin-bottom: 10px;">
-                <h4>Upload</h4>
+            <section>
+                <section class="col-sm-4">
+                    <form name="awsLookupForm">
+                        <div class="form-group">
+                            <label for="awsAssocTag">Associate Tag: </label>
+                            <input id="awsAssocTag" type="text" placeholder="1234-5678-9012" class="form-control"
+                                   required autocomplete="on" ng-model="lookupCtrl.account.associateTag"/>
+                        </div>
 
-                <div class="form-group">
-                    <div class="form-control" file-input="lookupCtrl.file" on-change="lookupCtrl.fileChanged()"></div>
-                    <p class="help-block">Upload UPCs in CSV format. No headers.</p>
-                    <button class="btn btn-primary" ng-click="lookupCtrl.upload()"
-                            ng-disabled="!lookupCtrl.file">Upload
-                    </button>
-                    <button class="btn btn-default" ng-disabled="!lookupCtrl.file"
-                            ng-click="lookupCtrl.clearClicked()">Clear
-                    </button>
-                </div>
-            </div>
+                        <div class="form-group">
+                            <label for="awsId">Access Key ID: </label>
+                            <input id="awsId" type="text" class="form-control"
+                                   required ng-model="lookupCtrl.account.id"/>
+                        </div>
+                        <div class="form-group">
+                            <label for="awsSecretKey">Secret Access Key: </label>
+                            <input id="awsSecretKey" type="password" class="form-control"
+                                   required ng-model="lookupCtrl.account.secretKey"/>
+                        </div>
+                    </form>
+                </section>
 
-            <div class="col-sm-12" ng-form="lookupCtrl.awsLookupForm">
-                <h4>Lookup</h4>
+                <section class="col-sm-4 upload-form">
+                    <div class="form-group">
+                        <label for="custom-uploader">File Upload: </label>
 
-                <div class="form-group col-sm-12">
-                    <label for="awsUpcList">UPCs: </label>
-                    <input id="awsUpcList" type="text" class="form-control" readonly
-                           ng-bind="lookupCtrl.idsQueue"/>
-                </div>
+                        <div class="form-control" file-input="lookupCtrl.file"
+                             id="custom-uploader" on-change="lookupCtrl.fileChanged()"></div>
+                        <p class="help-block">Upload UPCs in CSV format. No headers.</p>
+                        <button class="btn btn-primary btn-sm pull-right" ng-click="lookupCtrl.upload()"
+                                ng-disabled="!lookupCtrl.file">Upload
+                        </button>
+                    </div>
+                </section>
 
-                <div class="form-group col-sm-4">
-                    <label for="awsAssocTag">Associate Tag: </label>
-                    <input id="awsAssocTag" type="text" placeholder="1234-5678-9012" class="form-control"
-                           required ng-model="lookupCtrl.account.associateTag"/>
-                </div>
+                <section class="col-sm-4">
+                    <label>UPCs: </label>
+                    <pre class="upcIds">{{lookupCtrl.idsQueue.toString()}}</pre>
 
-                <div class="form-group col-sm-4">
-                    <label for="awsId">Access Key ID: </label>
-                    <input id="awsId" type="text" class="form-control"
-                           required ng-model="lookupCtrl.account.id"/>
-                </div>
-                <div class="form-group col-sm-4">
-                    <label for="awsSecretKey">Secret Access Key: </label>
-                    <input id="awsSecretKey" type="password" class="form-control"
-                           required ng-model="lookupCtrl.account.secretKey"/>
-                </div>
+                    <div class="pull-right">
+                        <button ng-disabled="lookupCtrl.disableSubmit" type="submit" ng-click="lookupCtrl.submit()"
+                                class="btn btn-primary btn-default left-btn">Submit
+                        </button>
+                        <button class="btn btn-default"
+                                ng-click="lookupCtrl.clearClicked()">Clear
+                        </button>
+                    </div>
+                </section>
 
-                <div class="col-sm-12">
-                    <button ng-disabled="lookupCtrl.disableSubmit" type="submit" ng-click="lookupCtrl.submit()"
-                            class="btn btn-primary btn-default">Submit
-                    </button>
-                </div>
-            </div>
-            <div class="col-sm-12">
-                <div class="form-group">
-                    <h4>Results</h4>
-                    <textarea readonly name="downloadableResults" ng-bind="lookupCtrl.results"
-                              class="csv-results form-control" rows="10"></textarea>
-                    <a href="" ng-disabled="!lookupCtrl.results" ng-click="lookupCtrl.download()"
-                       class="btn btn-default">Download</a>
-                </div>
-            </div>
+            </section>
 
-            <section class="col-sm-12 results-form">
+            <section class="col-sm-8 results-form">
+                <h4>Progress</h4>
                 <div ng-include="'client/status-alerts/status-alerts.ng.html'"></div>
             </section>
 
+            <section class="col-sm-4">
+                <h4>Results</h4>
+                <pre class="results-preview">{{lookupCtrl.results}}</pre>
+                <a href="" ng-disabled="!lookupCtrl.results" ng-click="lookupCtrl.download()"
+                   class="pull-right btn btn-default">Download</a>
+            </section>
 
         </div>
     </div>

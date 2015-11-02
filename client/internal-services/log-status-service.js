@@ -2,7 +2,7 @@
     'use strict';
 
     angular.module('amazonLookup')
-    .factory('StatusService', function ($rootScope, $filter) {
+    .factory('StatusService', function ($rootScope, $filter, $log) {
         var statusLogs = [];
 
         function getCurrentDateTime() {
@@ -17,7 +17,6 @@
                 formattedMessage: '[' + now + '] ' + message,
                 message: message
             };
-            console.log(status + ' - ' + message);
             statusLogs.push(logData);
             $rootScope.$broadcast('logsUpdated');
         }
@@ -34,18 +33,22 @@
 
             logError: function (message) {
                 log('error', message);
+                $log.error(status, message);
             },
 
             logInfo: function (message) {
                 log('info', message);
+                $log.info(status, message);
             },
 
             logSuccess: function (message) {
                 log('success', message);
+                $log(status, message);
             },
 
             logWarning: function (message) {
                 log('warning', message);
+                $log.warn(status, message);
             }
         };
     });

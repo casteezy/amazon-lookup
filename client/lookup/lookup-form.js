@@ -2,7 +2,6 @@
     'use strict';
 
     var module = angular.module('amazonLookup');
-    var _Papa = Papa; // External library for parsing CSV files
 
     /*
      Array of AWS 'response group' keys to reach desired value to input into ResponseGroupService.
@@ -31,12 +30,12 @@
     });
     /*
      TODO:
-     - make UI elements responsive to server callback codes
-
-     - wrap all callbacks in angular promises, try to wrap in own angular services
+        - make UI elements responsive to server callback codes
+        - fix UI styling
+        -
      */
     module.controller('LookupController',
-        function ($scope, $filter, $q, MeteorHelperService, CsvService, StatusService, FileDownloadService,
+        function ($scope, $q, MeteorHelperService, CsvService, StatusService, FileDownloadService,
                   IdService, PapaParseService, ResponseGroupService, ItemResponseGroupTrees, RequestResponseGroupTrees) {
             var self = this;
             self.idsQueue = [];
@@ -68,13 +67,13 @@
             // FILE PARSE
             function fileParseSuccess(results) {
                 var idList = IdService.findIds(results.data);
-                //var idCount = idList.length; // Save before slice
+                var idCount = idList.length; // Save before slice
 
                 while (idList.length > 0) {
                     var savedIds = idList.splice(0, 10); // Only 10 per AWS request
                     self.idsQueue.push(savedIds.toString());
                 }
-                StatusService.logInfo('"' + self.file.name + '" parsed. UPCs: ' + self.idsQueue.toString());
+                StatusService.logInfo('"' + self.file.name + '" parsed. UPCs: ' + idCount);
                 //self.uploaded = true;
                 //self.disableSubmit = false;
             }
@@ -121,7 +120,7 @@
                 var requestIds = requestQueue.splice(0, 1); // get one element from queue
                 MeteorHelperService.searchWithItemIds(requestIds.toString(), self.account).then(
                     function successSearch(data) {
-                        resultData.success.push(data);
+                        data && resultData.success.push(data);
 
                         if (requestQueue == 0) {
                             deferred.resolve(resultData);
@@ -222,5 +221,9 @@
             self.download = function () {
                 FileDownloadService.triggerDownload(self.results);
             };
+
+            self.getIds = function() {
+                return self.idsQueue.toString();
+            }
         }); // end controller
 })(window.angular);

@@ -6,7 +6,7 @@
          * Encodes the string results and triggers a download.
          * Names file after localized date/time.
          */
-        .factory('FileDownloadService', function() {
+        .factory('FileDownloadService', ['$filter', function($filter) {
             function triggerDownload(dataToOutput) {
                 var encodedUri = encodeURIComponent(dataToOutput);
                 var elem = document.createElement('a');
@@ -22,6 +22,6 @@
             return {
                 triggerDownload: triggerDownload
             }
-        })
+        }]);
 
 })(window.angular);

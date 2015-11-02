@@ -1,3 +1,7 @@
+.panel-heading .lookup-header {
+    margin: 0;
+    padding: 0;
+}
 .status-alerts table.message-table .message {
     white-space: pre-line;
 }
@@ -22,7 +26,13 @@
 .results-form textarea {
     margin-bottom: 10px;
 }
+.upcIds {
+    height: 14em;
+}
+.results-preview {
+    height: 20em;
+}
 
-textarea.csv-results {
-    font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
+section {
+    margin-bottom: 20px;
 }
