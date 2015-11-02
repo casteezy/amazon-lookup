@@ -28,31 +28,33 @@
         productType: ['ItemAttributes', 'ProductTypeName'],
         newCount: ['OfferSummary', 'TotalNew']
     });
-    /*
-     TODO:
-        - make UI elements responsive to server callback codes
-        - fix UI styling
-        -
-     */
+
     module.controller('LookupController',
         function ($scope, $q, MeteorHelperService, CsvService, StatusService, FileDownloadService,
                   IdService, PapaParseService, ResponseGroupService, ItemResponseGroupTrees, RequestResponseGroupTrees) {
             var self = this;
             self.idsQueue = [];
-            //self.uploaded = false;
             self.file = null;
             self.results = '';
-            //self.disableSubmit = true;
+            self.uploaded = false;
+            self.disableSubmit = true;
 
             self.account = {};
+
+            $scope.$watch(function watchAwsAccountInfo() {
+                return self.account;
+            }, function requireAccountForSubmit() {
+                self.disableSubmit = !(self.account.id || self.account.secretKey || self.account.associateTag);
+            });
 
             // CLEAR ALL
             self.clearClicked = function clearAllData() {
                 $scope.$broadcast('clearFileFromUploader');
                 StatusService.clear();
-                //self.uploaded = false;
                 self.file = null;
                 self.idsQueue = []; // All new queue
+                self.uploaded = false;
+                self.disableSubmit = true;
             };
 
             // UPLOAD
@@ -74,25 +76,25 @@
                     self.idsQueue.push(savedIds.toString());
                 }
                 StatusService.logInfo('"' + self.file.name + '" parsed. UPCs: ' + idCount);
-                //self.uploaded = true;
-                //self.disableSubmit = false;
+                self.uploaded = true;
+                self.disableSubmit = false;
             }
 
             function fileParseError(error) {
                 self.idsQueue = []; // All new queue
                 StatusService.logError('File parse error: "' + error + '"');
-                //self.uploaded = false;
+                self.uploaded = false;
                 self.file = null;
             }
 
             // FILE MODIFIED
             self.fileChanged = function () {
-                //self.uploaded = false;
+                self.uploaded = false;
             };
             function clearUpload() {
                 $scope.$broadcast('clearFileFromUploader');
                 self.file = null;
-                //self.uploaded = false;
+                self.uploaded = false;
             }
 
 
@@ -102,7 +104,6 @@
              * Do all AWS requests, clear the form, then handle results when all requests are complete.
              */
             self.submit = function doAwsRequestWithIds() {
-                //self.disableSubmit = true;
                 clearUpload();
                 if (!self.idsQueue) return;
                 StatusService.logInfo('AWS requests needed (max 10 UPCs per request): ' + self.idsQueue.length);
@@ -113,6 +114,7 @@
                 var requestPromise = deferred.promise;
                 requestPromise.then(function success(results) {
                     parseResultsFromDb(results);
+                    self.disableSubmit = true;
                 });
             };
 

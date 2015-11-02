@@ -36,7 +36,7 @@
                              id="custom-uploader" on-change="lookupCtrl.fileChanged()"></div>
                         <p class="help-block">Upload UPCs in CSV format. No headers.</p>
                         <button class="btn btn-primary btn-sm pull-right" ng-click="lookupCtrl.upload()"
-                                ng-disabled="!lookupCtrl.file">Upload
+                                ng-disabled="!lookupCtrl.file || lookupCtrl.uploaded">Upload
                         </button>
                     </div>
                 </section>
@@ -66,7 +66,7 @@
                 <h4>Results</h4>
                 <pre class="results-preview">{{lookupCtrl.results}}</pre>
                 <a href="" ng-disabled="!lookupCtrl.results" ng-click="lookupCtrl.download()"
-                   class="pull-right btn btn-default">Download</a>
+                   class="pull-right btn btn-primary">Download</a>
             </section>
 
         </div>
