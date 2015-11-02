@@ -9,6 +9,7 @@ Meteor.methods({
         } catch(e) {
             // Will happen if no params for aws account
             console.log('Items search error!', e);
+            throw new Meteor.Error("Item search failed", e);
         }
     }
 });

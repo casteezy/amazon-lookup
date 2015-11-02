@@ -32,9 +32,10 @@
                         return statusLogs;
                     },
 
-                    logError: function (message) {
+                    logError: function (message, errorData) {
                         log('error', message);
                         $log.error(status, message);
+                        errorData && $log.error(errorData);
                     },
 
                     logInfo: function (message) {

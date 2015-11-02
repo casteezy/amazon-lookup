@@ -130,10 +130,9 @@
                         } else {
                             doAllRequests(requestQueue, deferred, resultData);
                         }
-                    }, function errorSearch(err) {
-                        resultData.errors.push(err);
-
-                        StatusService.logError('Request error: "' + err + '"');
+                    }, function errorSearch(errData) {
+                        resultData.errors.push(errData);
+                        StatusService.logError(errData.errorType + ' - ' + errData.error, errData);
                         if (requestQueue == 0) {
                             deferred.resolve(resultData);
                         } else {
