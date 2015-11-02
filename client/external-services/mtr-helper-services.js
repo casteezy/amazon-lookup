@@ -3,7 +3,7 @@
 
     var module = angular.module('meteorHelpers', []);
 
-    module.factory('MeteorHelperService', function ResultItemsMtrHelperProvider($q, $meteor) {
+    module.factory('MeteorHelperService', ['$q', '$meteor', function ResultItemsMtrHelperProvider($q, $meteor) {
         function searchWithItemIds(itemIds, accountInfo) {
             var deferred = $q.defer();
             $meteor.call('searchByItemId', itemIds, accountInfo).then(
@@ -20,6 +20,6 @@
         return {
             searchWithItemIds: searchWithItemIds
         }
-    });
+    }]);
 
 })(window.angular);

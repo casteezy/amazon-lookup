@@ -2,7 +2,7 @@
     'use strict';
 
     angular.module('amazonLookup')
-        .factory('CsvService', function () {
+        .factory('CsvService', [function () {
             /**
              * Converts all values into CSV string. Uses keys as header.
              * Values must be primitive types (objects won't parse properly).
@@ -58,6 +58,6 @@
             return {
                 convertToCsv: convertInternal
             };
-        });
+        }]);
 
 })(window.angular);

@@ -2,7 +2,7 @@
     'use strict';
 
     angular.module('amazonLookup')
-    .factory('IdService', function () {
+    .factory('IdService', [function IdServiceProvider() {
         /**
          * Get all IDs from an object with arrays or primitive values.
          */
@@ -24,6 +24,6 @@
         return {
             findIds: findIds
         }
-    });
+    }]);
 
 })(window.angular);

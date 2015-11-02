@@ -6,7 +6,7 @@
      * Find a value from data converted from XML to JSON.
      * All objects and primitive values are wrapped in an array.
      */
-    .factory('ResponseGroupService', function () {
+    .factory('ResponseGroupService', [function () {
         /**
          * Recursively searches through object/array until either last element in searchPropList is reached
          * or until null
@@ -48,6 +48,6 @@
             findValue: findValueInternal,
             findValues: findValues
         };
-    });
+    }]);
 
 })(window.angular);

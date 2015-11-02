@@ -1,5 +1,5 @@
 angular.module('amazonLookup')
-    .controller('StatusAlertsCtrl', function ($scope, StatusService) {
+    .controller('StatusAlertsCtrl', ['$scope', 'StatusService', function ($scope, StatusService) {
         var self = this;
         self.logs = [];
 
@@ -22,4 +22,4 @@ angular.module('amazonLookup')
                 $scope.$apply();
             }
         });
-    });
+    }]);

@@ -30,7 +30,9 @@
     });
 
     module.controller('LookupController',
-        function ($scope, $q, MeteorHelperService, CsvService, StatusService, FileDownloadService,
+        ['$scope', '$q', 'MeteorHelperService', 'CsvService', 'StatusService', 'FileDownloadService',
+            'IdService', 'PapaParseService', 'ResponseGroupService', 'ItemResponseGroupTrees', 'RequestResponseGroupTrees',
+            function ($scope, $q, MeteorHelperService, CsvService, StatusService, FileDownloadService,
                   IdService, PapaParseService, ResponseGroupService, ItemResponseGroupTrees, RequestResponseGroupTrees) {
             var self = this;
             self.idsQueue = [];
@@ -75,7 +77,7 @@
                     var savedIds = idList.splice(0, 10); // Only 10 per AWS request
                     self.idsQueue.push(savedIds.toString());
                 }
-                StatusService.logInfo('"' + self.file.name + '" parsed. Values ' + idCount);
+                StatusService.logInfo('"' + self.file.name + '" parsed. Values found: ' + idCount);
                 self.uploaded = true;
                 self.disableSubmit = false;
             }
@@ -222,5 +224,5 @@
             self.getIds = function() {
                 return self.idsQueue.toString();
             }
-        }); // end controller
+        }]); // end controller
 })(window.angular);

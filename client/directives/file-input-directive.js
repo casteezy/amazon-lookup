@@ -6,7 +6,7 @@
      * http://odetocode.com/blogs/scott/archive/2013/07/05/a-file-input-directive-for-angularjs.aspx
      */
     angular.module('amazonLookup')
-        .directive('fileInput', function ($parse) {
+        .directive('fileInput', ['$parse', function fileInputDirectiveProvider($parse) {
             return {
                 restrict: 'EA',
                 template: '<input type="file" accept=".csv" />',
@@ -32,6 +32,6 @@
                     element.bind('change', updateModel);
                 }
             };
-        });
+        }]);
 
 })(window.angular);

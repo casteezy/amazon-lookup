@@ -27,6 +27,7 @@ Meteor.methods({
             console.log('Items search completed successfully');
             return transformResults(rawResult);
         } catch(e) {
+            // Will happen if no params for aws account
             console.log('Items search error!', e);
         }
     }
