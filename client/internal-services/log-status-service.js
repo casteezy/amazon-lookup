@@ -43,7 +43,7 @@
 
             logSuccess: function (message) {
                 log('success', message);
-                $log(status, message);
+                $log.log(status, message);
             },
 
             logWarning: function (message) {

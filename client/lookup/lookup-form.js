@@ -75,7 +75,7 @@
                     var savedIds = idList.splice(0, 10); // Only 10 per AWS request
                     self.idsQueue.push(savedIds.toString());
                 }
-                StatusService.logInfo('"' + self.file.name + '" parsed. UPCs: ' + idCount);
+                StatusService.logInfo('"' + self.file.name + '" parsed. Values ' + idCount);
                 self.uploaded = true;
                 self.disableSubmit = false;
             }
@@ -96,7 +96,6 @@
                 self.file = null;
                 self.uploaded = false;
             }
-
 
             // FILE REQUEST SUBMIT
 
@@ -152,11 +151,8 @@
                     StatusService.logWarning('No results found.');
                     return;
                 }
-                var allResults = [];
-                Array.prototype.push.apply(allResults, completeResults.success);
-                Array.prototype.push.apply(allResults, completeResults.errors);
 
-                angular.forEach(allResults, function eachRequestResponse(response, responseIdx) {
+                angular.forEach(completeResults.success, function eachRequestResponse(response, responseIdx) {
                     var requestNumber = responseIdx + 1;
                     var isFirstResponse = responseIdx === 0;
                     var responseItems = response['Items'];
@@ -173,8 +169,6 @@
                     // AWS request can be valid but have errors.
                     handleErrors(errors, requestIds);
                     if (validRequest === 'True') {
-                        //StatusService.logInfo('AWS request #' + (responseIdx + 1) + ' valid.');
-
                         var singleErrorAndId = !angular.isArray(requestIds) && !angular.isArray(errors);
                         var allIdsHaveErrors = angular.isArray(requestIds) && angular.isArray(errors)
                             && (requestIds.length === errors.length);
@@ -186,6 +180,7 @@
                                 var result = ResponseGroupService.findValues(item, ItemResponseGroupTrees);
                                 self.results += CsvService.convertToCsv(result, isFirstResponse && itemIdx == 0);
                             });
+                            StatusService.logSuccess('AWS request #' + requestNumber + ' complete.');
                         }
                     } else {
                         StatusService.logError('AWS request #' + requestNumber + ' invalid.');
@@ -193,7 +188,7 @@
                 });
 
                 if (resultCount) {
-                    StatusService.logInfo('Total successful item results found: ' + resultCount);
+                    StatusService.logSuccess('Total successful item results: ' + resultCount);
                 } else {
                     StatusService.logWarning('Total results found: 0');
                 }

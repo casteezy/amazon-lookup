@@ -1,3 +1,6 @@
+.panel-spacer {
+    margin-top: 10px;
+}
 .panel-heading .lookup-header {
     margin: 0;
     padding: 0;
@@ -15,24 +18,15 @@
     word-break: break-all;
 }
 .status-alerts {
-    height: 300px;
+    height: 18em;
     overflow-y: scroll;
-}
-
-.results-form {
-    margin-bottom: 15px;
-}
-
-.results-form textarea {
-    margin-bottom: 10px;
 }
 .upcIds {
     height: 14em;
 }
 .results-preview {
-    height: 20em;
-}
-
-section {
-    margin-bottom: 20px;
+    min-height: 5em;
+    max-height: 15em;
+    overflow: scroll;
+    word-wrap: normal;
 }

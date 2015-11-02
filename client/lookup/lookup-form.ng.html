@@ -1,6 +1,6 @@
 <section class="row" ng-controller="LookupController as lookupCtrl">
 
-    <div class="panel panel-default" style="margin-top:10px;">
+    <div class="panel panel-default panel-spacer">
         <div class="panel-heading">
             <h4 class="lookup-header">AWS Item Lookup</h4>
         </div>
@@ -12,7 +12,7 @@
                         <div class="form-group">
                             <label for="awsAssocTag">Associate Tag: </label>
                             <input id="awsAssocTag" type="text" placeholder="1234-5678-9012" class="form-control"
-                                   required autocomplete="on" ng-model="lookupCtrl.account.associateTag"/>
+                                   required autocomplete=on ng-model="lookupCtrl.account.associateTag"/>
                         </div>
 
                         <div class="form-group">
@@ -57,12 +57,12 @@
 
             </section>
 
-            <section class="col-sm-8 results-form">
+            <section class="col-sm-12 results-form">
                 <h4>Progress</h4>
                 <div ng-include="'client/status-alerts/status-alerts.ng.html'"></div>
             </section>
 
-            <section class="col-sm-4">
+            <section class="col-sm-12">
                 <h4>Results</h4>
                 <pre class="results-preview">{{lookupCtrl.results}}</pre>
                 <a href="" ng-disabled="!lookupCtrl.results" ng-click="lookupCtrl.download()"
