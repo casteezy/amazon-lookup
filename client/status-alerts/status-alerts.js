@@ -17,8 +17,8 @@ angular.module('amazonLookup')
         };
 
         $scope.$on('logsUpdated', function(event) {
+            self.logs = StatusService.getStatusLogs();
             if(!$scope.$$phase) {
-                self.logs = StatusService.getStatusLogs();
                 $scope.$apply();
             }
         });

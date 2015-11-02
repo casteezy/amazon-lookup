@@ -1,5 +1,25 @@
 OperationHelper = apac.OperationHelper;
 
+function transformResults(jsResults) {
+    console.log('Inside callback...');
+
+    var results = {};
+    _.each(jsResults.ItemLookupResponse, function (value, key, obj) {
+        if (key === '$') {
+            // '$' key not allowed
+            results['metaTag'] = value;
+        } else {
+            var strResponse = JSON.stringify(jsResults.ItemLookupResponse['Items']);
+            if (Array.isArray(jsResults.ItemLookupResponse['Items'])) {
+                console.log('Response Items length:', jsResults.ItemLookupResponse['Items'].length);
+            }
+            strResponse = strResponse.replace(/"\$"/g, "\"metaTag\""); // '$' key not allowed, nested children
+            results[key] = JSON.parse(strResponse);
+        }
+    });
+    return results;
+}
+
 Meteor.methods({
     searchByItemId: function (itemIds, accountInfo) {
         try {
@@ -9,9 +29,6 @@ Meteor.methods({
         } catch(e) {
             console.log('Items search error!', e);
         }
-    },
-    clearResults: function() {
-        ResultItems.remove({});
     }
 });
 
@@ -41,24 +58,4 @@ function doUpcSearch(itemIds, accountInfo) {
 
     var wrappedSearch = Meteor.wrapAsync(opHelper.execute, opHelper);
     return wrappedSearch('ItemLookup', searchParams);
-}
-
-function transformResults(jsResults) {
-    console.log('Inside callback...');
-
-    var results = {};
-    _.each(jsResults.ItemLookupResponse, function (value, key) {
-        if (key === '$') {
-            // '$' key not allowed
-            results['metaTag'] = value;
-        } else {
-            var strResponse = JSON.stringify(jsResults.ItemLookupResponse['Items']);
-            if (Array.isArray(jsResults.ItemLookupResponse['Items'])) {
-                console.log('Response Items length:', jsResults.ItemLookupResponse['Items'].length);
-            }
-            strResponse = strResponse.replace(/"\$"/g, "\"metaTag\""); // '$' key not allowed, nested children
-            results[key] = JSON.parse(strResponse);
-        }
-    });
-    return results;
 }

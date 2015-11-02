@@ -1,3 +1,3 @@
-Meteor.startup(function () {
-    ResultItems.remove({});
-});
+//Meteor.startup(function () {
+//    ResultItems.remove({});
+//});

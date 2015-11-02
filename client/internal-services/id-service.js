@@ -21,28 +21,8 @@
             return idList;
         }
 
-        var savedIds = [];
-        function queue(itemIds) {
-            if (Array.isArray(itemIds)) {
-                Array.prototype.push.apply(savedIds, itemIds);
-            } else if (angular.isString(itemIds)) {
-                savedIds.push(itemIds);
-            }
-        }
-
-        function getQueue() {
-            return savedIds;
-        }
-
-        function reset() {
-            savedIds = [];
-        }
-
         return {
-            findIds: findIds,
-            queue: queue,
-            getQueue: getQueue,
-            clear: reset
+            findIds: findIds
         }
     });
 

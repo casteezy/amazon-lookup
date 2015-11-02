@@ -22,3 +22,7 @@
 .results-form textarea {
     margin-bottom: 10px;
 }
+
+textarea.csv-results {
+    font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
+}

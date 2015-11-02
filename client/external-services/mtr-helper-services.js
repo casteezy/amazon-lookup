@@ -3,13 +3,10 @@
 
     var module = angular.module('meteorHelpers', []);
 
-    module.factory('ResultItemsMtrHelper', function ResultItemsMtrHelperProvider($q, $meteor) {
-        function getResults() {
-
-        }
-        function search(itemIds) {
+    module.factory('MeteorHelperService', function ResultItemsMtrHelperProvider($q, $meteor) {
+        function searchWithItemIds(itemIds, accountInfo) {
             var deferred = $q.defer();
-            $meteor.call('searchByItemId', itemIds).then(
+            $meteor.call('searchByItemId', itemIds, accountInfo).then(
                 function success(data) {
                     deferred.resolve(data);
                 },
@@ -20,23 +17,8 @@
             return deferred.promise;
         }
 
-        function clear() {
-            /*var deferred = $q.defer();
-            $meteor.call('clearResults').then(
-                function success(data) {
-                    deferred.resolve(data);
-                },
-                function error(err) {
-                    deferred.reject(err);
-                }
-            );
-            return deferred.promise;*/
-        }
-
         return {
-            getResults: getResults,
-            searchWithItemIds: search,
-            clearResults: clear
+            searchWithItemIds: searchWithItemIds
         }
     });
 

@@ -1,4 +1,3 @@
-
 (function (angular) {
     'use strict';
 
@@ -30,128 +29,133 @@
         productType: ['ItemAttributes', 'ProductTypeName'],
         newCount: ['OfferSummary', 'TotalNew']
     });
-/*
-    TODO:
-    - remove MtrResults collection from angular code
-    - make UI elements responsive to server callback codes
+    /*
+     TODO:
+     - make UI elements responsive to server callback codes
 
-    - wrap all callbacks in angular promises, try to wrap in own angular services
- */
+     - wrap all callbacks in angular promises, try to wrap in own angular services
+     */
     module.controller('LookupController',
-        function ($scope, $meteor, $window, $filter, $q, ResultItemsMtrHelper, CsvService, StatusService,
-                  IdService, ResponseGroupService, ItemResponseGroupTrees, RequestResponseGroupTrees) {
+        function ($scope, $filter, $q, MeteorHelperService, CsvService, StatusService, FileDownloadService,
+                  IdService, PapaParseService, ResponseGroupService, ItemResponseGroupTrees, RequestResponseGroupTrees) {
             var self = this;
-            self.MtrResults = $scope.$meteorCollection(ResultItems);
             self.idsQueue = [];
             //self.uploaded = false;
             self.file = null;
             self.results = '';
-            self.disableSubmit = true;
+            //self.disableSubmit = true;
 
             self.account = {};
 
-            var papaConfig = {
-                complete: function fileParseSuccess(results) {
-                    var idList = IdService.findIds(results.data);
-                    var idCount = idList.length; // Save before slice
-
-                    while (idList.length > 0) {
-                        var savedIds = idList.splice(0, 10); // Only 10 per AWS request
-                        //IdService.queue(savedIds);
-                        self.idsQueue.push(savedIds.toString());
-                    }
-                    StatusService.logInfo('"' + self.file.name + '" parsed. UPCs: ' + self.idsQueue.toString());
-                    //self.uploaded = true;
-                    $scope.$broadcast('clearFileFromUploader');
-                    self.file = null;
-                    self.disableSubmit = false;
-                },
-                error: function fileParseError(error) {
-                    self.idsQueue = []; // All new queue
-                    StatusService.logError('File parse error: "' + error + '"');
-                    //self.uploaded = false;
-                    self.file = null;
-                }
+            // CLEAR ALL
+            self.clearClicked = function clearAllData() {
+                $scope.$broadcast('clearFileFromUploader');
+                StatusService.clear();
+                //self.uploaded = false;
+                self.file = null;
+                self.idsQueue = []; // All new queue
             };
 
+            // UPLOAD
+            self.upload = function uploadAndParseFile() {
+                self.idsQueue = [];
+                StatusService.clear();
+                self.results = '';
+                PapaParseService.parse(self.file)
+                    .then(fileParseSuccess, fileParseError);
+            };
+
+            // FILE PARSE
+            function fileParseSuccess(results) {
+                var idList = IdService.findIds(results.data);
+                //var idCount = idList.length; // Save before slice
+
+                while (idList.length > 0) {
+                    var savedIds = idList.splice(0, 10); // Only 10 per AWS request
+                    self.idsQueue.push(savedIds.toString());
+                }
+                StatusService.logInfo('"' + self.file.name + '" parsed. UPCs: ' + self.idsQueue.toString());
+                //self.uploaded = true;
+                //self.disableSubmit = false;
+            }
+
+            function fileParseError(error) {
+                self.idsQueue = []; // All new queue
+                StatusService.logError('File parse error: "' + error + '"');
+                //self.uploaded = false;
+                self.file = null;
+            }
+
+            // FILE MODIFIED
             self.fileChanged = function () {
                 //self.uploaded = false;
             };
-
             function clearUpload() {
                 $scope.$broadcast('clearFileFromUploader');
                 self.file = null;
                 //self.uploaded = false;
             }
 
-            self.clearUpload = clearAll;
-            function clearAll() {
-                $scope.$broadcast('clearFileFromUploader');
-                StatusService.clear();
-                //IdService.clear();
-                //self.uploaded = false;
-                self.file = null;
-                self.idsQueue = []; // All new queue
-            }
 
-            self.upload = function uploadAndParseFile() {
-                self.idsQueue = [];
-                StatusService.clear();
-                self.results = '';
-                _Papa.parse(self.file, papaConfig);
-            };
+            // FILE REQUEST SUBMIT
 
             /**
              * Do all AWS requests, clear the form, then handle results when all requests are complete.
              */
             self.submit = function doAwsRequestWithIds() {
-                self.disableSubmit = true;
+                //self.disableSubmit = true;
                 clearUpload();
                 if (!self.idsQueue) return;
                 StatusService.logInfo('AWS requests needed (max 10 UPCs per request): ' + self.idsQueue.length);
 
                 var deferred = $q.defer();
-                doAllRequests(self.idsQueue, deferred);
+                doAllRequests(self.idsQueue, deferred, {success: [], errors: []});
+
                 var requestPromise = deferred.promise;
-                requestPromise.then(function success() {
-                    parseResultsFromDb();
-                    ResultItemsMtrHelper.clearResults().then(function success() {
-                        self.idsQueue = [];
-                    });
+                requestPromise.then(function success(results) {
+                    parseResultsFromDb(results);
                 });
             };
 
-            function doAllRequests(requestQueue, deferred) {
-                var requestIds = requestQueue.splice(0, 1); // one element
-                ResultItemsMtrHelper.searchWithItemIds(requestIds.toString()).then(function successSearch() {
-                    if (requestQueue == 0) {
-                        deferred.resolve();
-                    } else {
-                        doAllRequests(requestQueue);
-                    }
-                }).catch(function errorSearch(err) {
-                    StatusService.logError('Request error: "' + err + '"');
-                    if (requestQueue == 0) {
-                        deferred.resolve();
-                    } else {
-                        doAllRequests(requestQueue);
-                    }
-                });
+            function doAllRequests(requestQueue, deferred, resultData) {
+                var requestIds = requestQueue.splice(0, 1); // get one element from queue
+                MeteorHelperService.searchWithItemIds(requestIds.toString(), self.account).then(
+                    function successSearch(data) {
+                        resultData.success.push(data);
+
+                        if (requestQueue == 0) {
+                            deferred.resolve(resultData);
+                        } else {
+                            doAllRequests(requestQueue, deferred, resultData);
+                        }
+                    }, function errorSearch(err) {
+                        resultData.errors.push(err);
+
+                        StatusService.logError('Request error: "' + err + '"');
+                        if (requestQueue == 0) {
+                            deferred.resolve(resultData);
+                        } else {
+                            doAllRequests(requestQueue, deferred, resultData);
+                        }
+                    });
             }
 
             /**
              * Read in AWS responses from database and parse to get desired values for output.
              */
-            function parseResultsFromDb() {
+            function parseResultsFromDb(completeResults) {
                 self.results = '';
                 var resultCount = 0;
-                if (!self.MtrResults.length) {
+                if (!completeResults.success.length && !completeResults.errors.length) {
                     // Will happen if parse checked before server is complete or if AWS credentials incomplete.
                     StatusService.logWarning('No results found.');
                     return;
                 }
+                var allResults = [];
+                Array.prototype.push.apply(allResults, completeResults.success);
+                Array.prototype.push.apply(allResults, completeResults.errors);
 
-                angular.forEach(self.MtrResults, function eachRequestResponse(response, responseIdx) {
+                angular.forEach(allResults, function eachRequestResponse(response, responseIdx) {
                     var requestNumber = responseIdx + 1;
                     var isFirstResponse = responseIdx === 0;
                     var responseItems = response['Items'];
@@ -214,20 +218,9 @@
                 StatusService.logError('"' + errMessage + '"');
             }
 
-            /**
-             * Encodes the string results and triggers a download.
-             * Names file after localized date/time.
-             */
-            self.download = function downloadFile() {
-                var encodedUri = encodeURIComponent(self.results);
-                var elem = document.createElement('a');
-                elem.href = 'data:attachment/csv,' + encodedUri;
-                elem.target = '_blank';
-                var dateTime = $filter('date')(Date.now(), 'yyyy-MMM-dd_HH-mm');
-                elem.download = dateTime + '__Results.csv';
-
-                document.body.appendChild(elem);
-                elem.click();
+            // DOWNLOAD COMPLETE TRANSFORMED RESULTS
+            self.download = function () {
+                FileDownloadService.triggerDownload(self.results);
             };
         }); // end controller
 })(window.angular);
