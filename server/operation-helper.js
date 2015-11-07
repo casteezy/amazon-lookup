@@ -35,7 +35,7 @@ function doUpcSearch(itemIds, accountInfo) {
         'ItemId': itemIds,
         //'MerchantId': 'Amazon', //Only items sold by Amazon
         'SearchIndex': 'All',
-        'ResponseGroup': 'ItemAttributes,OfferSummary'
+        'ResponseGroup': 'ItemAttributes,OfferSummary,SalesRank'
     };
 
     var wrappedSearch = Meteor.wrapAsync(opHelper.execute, opHelper);

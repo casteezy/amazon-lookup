@@ -1,8 +1,16 @@
 <head>
     <title>AWS Item Lookup</title>
-    <link href="barcode.ico" rel="icon" type="image/x-icon" />
+    <link href="barcode.ico" rel="icon" type="image/x-icon"/>
 </head>
 
 <body ng-app="amazonLookup" class="container">
-    <section ng-include="'client/lookup/lookup-form.ng.html'"></section>
+<section ng-include="'client/lookup/lookup-form.ng.html'"></section>
+
+<section id="footer">
+    <em class="text-muted text-center">
+        <small>Built on Meteor, v1.2. Warning: This app is not secure.
+            Any data submitted through this app is vulnerable. Use at your own risk.
+        </small>
+    </em>
+</section>
 </body>

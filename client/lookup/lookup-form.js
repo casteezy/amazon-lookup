@@ -26,7 +26,8 @@
         department: ['ItemAttributes', 'Department'],
         productGroup: ['ItemAttributes', 'ProductGroup'],
         productType: ['ItemAttributes', 'ProductTypeName'],
-        newCount: ['OfferSummary', 'TotalNew']
+        newCount: ['OfferSummary', 'TotalNew'],
+        salesRank: ['SalesRank']
     });
 
     module.controller('LookupController',
