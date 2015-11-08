@@ -1,4 +1,4 @@
-<section class="row" ng-controller="LookupController as lookupCtrl">
+<div class="row" ng-controller="LookupController as lookupCtrl">
 
     <div class="panel panel-default panel-spacer">
         <div class="panel-heading">
@@ -69,7 +69,16 @@
                    class="pull-right btn btn-primary">Download</a>
             </section>
 
+            <section class="col-sm-12">
+                <h4 class="section-header">Response Group Docs</h4>
+                <ul class="list-inline">
+                    <li ng-repeat="(key, value) in lookupCtrl.responseGroupUrls">
+                        <a href="" ng-href="{{value}}" target="_blank">{{key}}</a>
+                    </li>
+                </ul>
+            </section>
+
         </div>
     </div>
 
-</section>
+</div>
